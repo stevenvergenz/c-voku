@@ -2,6 +2,7 @@
 #define GRIDMODEL_H
 
 #include <QAbstractTableModel>
+#include <QDebug>
 #include "grid.h"
 
 class GridModel : public QAbstractTableModel

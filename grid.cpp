@@ -26,7 +26,7 @@ Grid::Grid(int size) : _size(size)
 			int b = blockSize*(r%blockSize) + c%blockSize;
 
 			// create new cell
-			Cell* newCell = new Cell(rows[r], columns[c], blocks[b]);
+			Cell* newCell = new Cell(rows[r], columns[c], blocks[b], 5);
 			cells.append(newCell);
 
 			rows[r].append(newCell);

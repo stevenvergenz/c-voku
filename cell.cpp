@@ -58,7 +58,3 @@ char Cell::value() const {
 bool Cell::isGiven() const {
 	return given;
 }
-
-bool Cell::operator==(const Cell& other) const {
-	return _value == other.value();
-}

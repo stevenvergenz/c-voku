@@ -27,8 +27,6 @@ public:
 	char value() const;
 	bool isGiven() const;
 
-	bool operator==(const Cell& other) const;
-
 private:
 	QList<Cell*>& row;
 	QList<Cell*>& column;
@@ -38,7 +36,5 @@ private:
 	bool given;
 	QSet<char> domain;
 };
-
-uint qHash(Cell c);
 
 #endif // CELL_H

@@ -8,6 +8,7 @@ MainWindow::MainWindow(QWidget *parent)
 	grid = new Grid(9);
 	model = new GridModel(*grid, this);
 	ui->tableView->setModel(model);
+	ui->tableView->resizeColumnsToContents();
 }
 
 MainWindow::~MainWindow()
