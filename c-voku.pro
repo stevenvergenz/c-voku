@@ -10,15 +10,18 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = c-voku
 TEMPLATE = app
+QMAKE_CXXFLAGS += -std=c++11
 
 
 SOURCES += main.cpp\
         mainwindow.cpp \
     cell.cpp \
-    grid.cpp
+    grid.cpp \
+    gridmodel.cpp
 
 HEADERS  += mainwindow.h \
     cell.h \
-    grid.h
+    grid.h \
+    gridmodel.h
 
 FORMS    += mainwindow.ui

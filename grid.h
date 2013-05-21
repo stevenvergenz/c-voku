@@ -14,13 +14,16 @@ public:
 	Grid(int size);
 	~Grid();
 
+	int size();
+	Cell* cellAt(int row, int column) const;
+
 private:
 
-	int size;
-	QVector<Cell*> cells;
-	QSet<Cell&>* rows;
-	QSet<Cell&>* columns;
-	QSet<Cell&>* blocks;
+	int _size;
+	QList<Cell*> cells;
+	QList<QList<Cell*> > rows;
+	QList<QList<Cell*> > columns;
+	QList<QList<Cell*> > blocks;
 
 
 };

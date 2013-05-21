@@ -11,28 +11,34 @@ public:
 	static const char UNKNOWN = -1;
 
 	// constructor, fixes position and value of cell
-	Cell(QSet<Cell &> &row, QSet<Cell &> &column, QSet<Cell &> &block, char value);
+	Cell(QList<Cell*> &row, QList<Cell*> &column, QList<Cell*> &block, char value = UNKNOWN);
 
 	// returns the number of potential values in the cell
-	int domainSize();
+	int domainSize() const;
 
 	// returns whether a given value is in the domain
-	bool inDomain(char value);
+	bool inDomain(char value) const;
 
 	// returns a set of cells dependent on this one
-	bool dependentCells();
+	QList<Cell*> dependentCells() const;
 
 	// attempts to set value of cell, returns false if invalid
-	bool setValue(char value, bool given);
+	bool setValue(char value, bool given = false);
+	char value() const;
+	bool isGiven() const;
+
+	bool operator==(const Cell& other) const;
 
 private:
-	QSet<Cell&>& row;
-	QSet<Cell&>& column;
-	QSet<Cell&>& block;
+	QList<Cell*>& row;
+	QList<Cell*>& column;
+	QList<Cell*>& block;
 
-	char value;
+	char _value;
 	bool given;
 	QSet<char> domain;
 };
+
+uint qHash(Cell c);
 
 #endif // CELL_H
