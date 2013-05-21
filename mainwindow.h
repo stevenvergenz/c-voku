@@ -2,6 +2,8 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include "grid.h"
+#include "gridmodel.h"
 
 namespace Ui {
 class MainWindow;
@@ -17,6 +19,8 @@ public:
 	
 private:
 	Ui::MainWindow *ui;
+	Grid* grid;
+	GridModel* model;
 };
 
 #endif // MAINWINDOW_H

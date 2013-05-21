@@ -17,7 +17,22 @@ int GridModel::columnCount(const QModelIndex& parent) const
 
 QVariant GridModel::data(const QModelIndex& index, int role) const
 {
-	return QVariant( _grid.cellAt(index.row(), index.column())->value() );
+	if( role == Qt::DisplayRole ){
+		char val = _grid.cellAt(index.row(), index.column())->value();
+		if( val == Cell::UNKNOWN )
+			return QVariant("");
+		else
+			return QVariant(val);
+	}
+	else if( role == Qt::ToolTipRole ){
+		return QVariant();
+	}
+	else if( role == Qt::StatusTipRole ){
+		return QVariant();
+	}
+	else {
+		return QVariant();
+	}
 }
 
 bool GridModel::setData(const QModelIndex& index, const QVariant& value, int role)
@@ -27,8 +42,8 @@ bool GridModel::setData(const QModelIndex& index, const QVariant& value, int rol
 
 Qt::ItemFlags GridModel::flag(const QModelIndex& index) const
 {
-	Qt::ItemFlags retFlags = Qt::ItemIsEnabled;
+	Qt::ItemFlags retFlags = Qt::ItemIsSelectable | Qt::ItemIsEnabled;
 	if( ! _grid.cellAt(index.row(), index.column())->isGiven() ){
-		retFlags |= Qt::ItemIsSelectable | Qt::ItemIsEditable;
+		retFlags |= Qt::ItemIsEditable;
 	}
 }
