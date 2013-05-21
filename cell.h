@@ -23,7 +23,7 @@ public:
 	bool dependentCells();
 
 	// attempts to set value of cell, returns false if invalid
-	bool setValue(char value);
+	bool setValue(char value, bool given);
 
 private:
 	QSet<Cell&>& row;
