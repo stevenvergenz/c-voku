@@ -22,21 +22,42 @@ QVariant GridModel::data(const QModelIndex& index, int role) const
 	{
 	// sets the actual content of the cell
 	case Qt::DisplayRole:
+
 		if( subject->value() == Cell::UNKNOWN )
 			return QVariant("");
-		else
-			return QVariant(subject->value());
+		else {
+			QChar value = _grid.alphabet().at(subject->value());
+			return QVariant(value);
+		}
 		break;
 
 	// sets the cell alignment
 	case Qt::TextAlignmentRole:
+
 		return QVariant(Qt::AlignCenter);
 		break;
 
 	case Qt::ToolTipRole:
-		break;
 	case Qt::StatusTipRole:
+	{
+		QList<char> d = subject->domain().toList();
+		QString ret = "";
+		qSort(d);
+
+		if( d.isEmpty() ){
+			return QVariant("No domain");
+		}
+		else {
+			ret += _grid.alphabet().at(d.takeFirst());
+			for( auto i=d.begin(); i!=d.end(); ++i ){
+				ret += "/";
+				ret += _grid.alphabet().at(*i);
+			}
+			return QVariant(ret);
+		}
 		break;
+	}
+
 	case Qt::FontRole:
 		break;
 	case Qt::BackgroundRole:

@@ -16,6 +16,8 @@ public:
 
 	int size();
 	Cell* cellAt(int row, int column) const;
+	QSet<char> fullDomain();
+	const QString alphabet() const;
 
 private:
 

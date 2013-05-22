@@ -13,11 +13,8 @@ public:
 	// constructor, fixes position and value of cell
 	Cell(QList<Cell*> &row, QList<Cell*> &column, QList<Cell*> &block, char value = UNKNOWN);
 
-	// returns the number of potential values in the cell
-	int domainSize() const;
-
-	// returns whether a given value is in the domain
-	bool inDomain(char value) const;
+	void setDomain(QSet<char> newDomain);
+	const QSet<char> domain() const;
 
 	// returns a set of cells dependent on this one
 	QList<Cell*> dependentCells() const;
@@ -34,7 +31,7 @@ private:
 
 	char _value;
 	bool given;
-	QSet<char> domain;
+	QSet<char> _domain;
 };
 
 #endif // CELL_H

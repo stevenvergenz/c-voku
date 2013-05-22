@@ -8,13 +8,15 @@ Cell::Cell(QList<Cell*>& row, QList<Cell*>& column, QList<Cell*>& block, char va
 	}
 }
 
-int Cell::domainSize() const {
-	return domain.size();
+
+void Cell::setDomain(QSet<char> newDomain){
+	_domain = newDomain;
 }
 
-bool Cell::inDomain(char value) const {
-	return domain.contains(value);
+const QSet<char> Cell::domain() const {
+	return _domain;
 }
+
 
 QList<Cell*> Cell::dependentCells() const
 {
@@ -34,15 +36,16 @@ QList<Cell*> Cell::dependentCells() const
 			retList.append(*i);
 		}
 	}
+	return retList;
 }
 
 bool Cell::setValue(char value, bool given)
 {
 	// only allow assignment if given value is valid
-	if( domain.contains(value) )
+	if( _domain.contains(value) )
 	{
 		this->_value = value;
-		domain.clear();
+		_domain.clear();
 		this->given = given;
 
 		return true;

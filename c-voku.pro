@@ -17,11 +17,13 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     cell.cpp \
     grid.cpp \
-    gridmodel.cpp
+    gridmodel.cpp \
+    puzzleview.cpp
 
 HEADERS  += mainwindow.h \
     cell.h \
     grid.h \
-    gridmodel.h
+    gridmodel.h \
+    puzzleview.h
 
 FORMS    += mainwindow.ui
