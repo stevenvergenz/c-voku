@@ -18,12 +18,14 @@ SOURCES += main.cpp\
     cell.cpp \
     grid.cpp \
     gridmodel.cpp \
-    puzzleview.cpp
+    puzzleview.cpp \
+    exception.cpp
 
 HEADERS  += mainwindow.h \
     cell.h \
     grid.h \
     gridmodel.h \
-    puzzleview.h
+    puzzleview.h \
+    exception.h
 
 FORMS    += mainwindow.ui

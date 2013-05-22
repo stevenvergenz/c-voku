@@ -2,6 +2,8 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QFileDialog>
+
 #include "grid.h"
 #include "gridmodel.h"
 
@@ -16,6 +18,9 @@ class MainWindow : public QMainWindow
 public:
 	explicit MainWindow(QWidget *parent = 0);
 	~MainWindow();
+
+public slots:
+	void openFile();
 	
 private:
 	Ui::MainWindow *ui;

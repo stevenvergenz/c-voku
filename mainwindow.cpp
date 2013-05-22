@@ -5,13 +5,17 @@ MainWindow::MainWindow(QWidget *parent)
 : QMainWindow(parent), ui(new Ui::MainWindow)
 {
 	ui->setupUi(this);
-	grid = new Grid(9);
-	model = new GridModel(*grid, this);
-	ui->tableView->setModel(model);
-	ui->tableView->resizeColumnsToContents();
+
+	// connect the open menu item
+	connect( ui->actionOpen, SIGNAL(triggered()), this, SLOT(openFile()) );
 }
 
 MainWindow::~MainWindow()
 {
 	delete ui;
+}
+
+void MainWindow::openFile()
+{
+	QString filename = QFileDialog::getOpenFileName(this, "Open sudoku", QString(), "Sudoku files (*.sko)");
 }

@@ -1,26 +1,29 @@
 #include "grid.h"
 
-const QString Grid::alphabet() const
+/*
+ * Return the valid alphabet for the current size
+ */
+const QString Grid::alphabet(int base)
 {
-	if( _size == 4 ){
+	if( base == 4 ){
 		return "1234";
 	}
-	else if( _size == 9 ){
+	else if( base == 9 ){
 		return "123456789";
 	}
-	else if( _size == 16 ){
+	else if( base == 16 ){
 		return "0123456789ABCDEF";
 	}
-	else if( _size == 25 ){
+	else if( base == 25 ){
 		return "ABCDEFGHIJKLMNOPQRSTUVWXY";
 	}
-	else if( _size == 36 ){
+	else if( base == 36 ){
 		return "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 	}
-	else if( _size == 49 ){
+	else if( base == 49 ){
 		return "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwx";
 	}
-	else if( _size == 64 ){
+	else if( base == 64 ){
 		return "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 	}
 	else {
@@ -28,6 +31,14 @@ const QString Grid::alphabet() const
 	}
 }
 
+const QString Grid::alphabet() const {
+	return Grid::alphabet(_size);
+}
+
+
+/*
+ * General constructor, takes size and populates a grid with empty cells
+ */
 Grid::Grid(int size) : _size(size)
 {
 	// initialize the groups to be the appropriate size
@@ -42,7 +53,7 @@ Grid::Grid(int size) : _size(size)
 	double actualSqrt = sqrt((double)size);
 	int blockSize = qRound( actualSqrt );
 	if( abs((double)blockSize - actualSqrt) > 0.01 ){
-		throw new std::invalid_argument("Grid size is not a square");
+		throw std::invalid_argument("Grid size is not a square");
 	}
 
 	// start initializing cells
@@ -66,12 +77,104 @@ Grid::Grid(int size) : _size(size)
 	}
 }
 
+
+/*
+ * Destructor, frees all cells
+ */
 Grid::~Grid()
 {
 	for( int i=0; i<cells.size(); i++ ){
 		delete cells[i];
 	}
 }
+
+
+/*
+ * Parses a puzzle file into a Grid object
+ */
+Grid* Grid::parse(const QString filename)
+{
+	// eventual return value
+	Grid* newGrid = nullptr;
+
+	// prepare the file for reading
+	QFile file(filename);
+	if( !file.open(QFile::ReadOnly) ){
+		throw Exception("Could not open file for reading");
+	}
+
+	// initialize the stream
+	QTextStream ifp(&file);
+
+	// read the contents of the file into a buffer
+	QStringList buffer;
+	while( !ifp.atEnd() ){
+		QString temp = ifp.readLine();
+		if( !temp.isEmpty() ){
+			buffer << temp;
+		}
+	}
+	file.close();
+
+	// detect size and check for validity
+	int length = buffer.length();
+	if( length != buffer[0].length() ){
+		throw Exception("Input not of equal dimensions");
+	}
+
+	double dBase = (sqrt(5+4*length)-1)/2;
+	dBase *= dBase;
+	int base = qRound(dBase);
+	if( abs(dBase-base)>0.01 || Grid::alphabet(base) == "" ){
+		throw Exception("Input not in a valid base");
+	}
+
+	// now that we're sure the size is correct, initialize the grid
+	newGrid = new Grid(base);
+	QString alpha = newGrid->alphabet();
+
+	// loop over each row and column
+	for( int r=0; r<newGrid->size(); r++ ){
+		for( int c=0; c<newGrid->size(); c++ ){
+
+			// calculate the input row/column for each cell
+			int rf = r + r/base;
+			int cf = c + c/base;
+
+			QChar symbol = buffer[rf][cf];
+
+			// check if it's a valid symbol in the appropriate base
+			if( alpha.indexOf(symbol) != -1 ){
+				bool valid = newGrid->cellAt(r,c)->setValue(alpha.indexOf(symbol), true);
+				if( !valid ){
+					throw Exception(
+						QString("Input contains illegal placement at (%1,%2)").arg(r,c)
+					);
+				}
+			}
+
+			// if it's not a symbol, is it a space?
+			else if( symbol == ' ' ){
+				// ain't no problem here, cells already initialized to unknown
+				continue;
+			}
+
+			// anything else, and we've got a problem
+			else {
+				throw Exception( QString("Invalid symbol '%1' at (%2,%3)").arg(symbol, rf, cf) );
+			}
+
+		}// column
+	}// row
+
+	// the whole file has been parsed, return
+	return newGrid;
+}
+
+
+/******************************************
+ * General grid accessors
+ ******************************************/
 
 int Grid::size(){
 	return this->_size;
