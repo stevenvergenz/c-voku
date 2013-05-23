@@ -47,7 +47,12 @@ QVariant GridModel::data(const QModelIndex& index, int role) const
 			qSort(d);
 
 			if( d.isEmpty() ){
-				return QVariant("No domain");
+				if( subject->isGiven() ){
+					return QVariant();
+				}
+				else {
+					return QVariant("No domain");
+				}
 			}
 			else {
 				ret += _grid.alphabet().at(d.takeFirst());

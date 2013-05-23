@@ -19,13 +19,15 @@ SOURCES += main.cpp\
     grid.cpp \
     gridmodel.cpp \
     puzzleview.cpp \
-    exception.cpp
+    exception.cpp \
+    metatableitemdelegate.cpp
 
 HEADERS  += mainwindow.h \
     cell.h \
     grid.h \
     gridmodel.h \
     puzzleview.h \
-    exception.h
+    exception.h \
+    metatableitemdelegate.h
 
 FORMS    += mainwindow.ui

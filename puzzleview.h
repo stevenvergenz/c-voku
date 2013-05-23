@@ -6,6 +6,8 @@
 #include <QSizePolicy>
 #include <QHeaderView>
 
+#include "metatableitemdelegate.h"
+
 class PuzzleView : public QTableView
 {
 	Q_OBJECT
