@@ -175,7 +175,12 @@ Grid* Grid::parse(const QString filename)
 		}// column
 	}// row
 
-	// the whole file has been parsed, return
+	// the whole file has been parsed, now update domains and return
+	qDebug() << "Fixing arc consistency";
+	auto diff = newGrid->fixArcConsistency();
+	for( auto i=diff.begin(); i!=diff.end(); ++i ){
+		qDebug() << QString("Removed %1 values").arg(QString::number(i.value().size()));
+	}
 	return newGrid;
 }
 
@@ -184,7 +189,7 @@ Grid* Grid::parse(const QString filename)
  * General grid accessors
  ******************************************/
 
-int Grid::size(){
+int Grid::size() const{
 	return this->_size;
 }
 
@@ -193,11 +198,61 @@ Cell* Grid::cellAt(int row, int column) const
 	return rows[row][column];
 }
 
-QSet<char> Grid::fullDomain()
+QSet<char> Grid::fullDomain() const
 {
 	QSet<char> retDomain;
 	for( char i=0; i<_size; i++ ){
 		retDomain << i;
 	}
 	return retDomain;
+}
+
+
+/*******************************************
+ * Fix Arc Consistency
+ *******************************************/
+
+QHash<Cell*, QSet<char> > Grid::fixArcConsistency(Cell* dirtyCell)
+{
+	QHash<Cell*, QSet<char> > changes;
+	QQueue<Cell*> dirtyCells;
+
+	// initialize the set of cells to check
+	// if no dirty cell specified, assume all are dirty
+	if( dirtyCell != nullptr ){
+		auto depCells = dirtyCell->dependentCells();
+		for( auto dep=depCells.constBegin(); dep!=depCells.constEnd(); ++dep )
+		{
+			dirtyCells.enqueue(*dep);
+		}
+	}
+	else {
+		for( int i=0; i<cells.count(); i++ ){
+			dirtyCells.enqueue( cells.at(i) );
+		}
+	}
+
+	// loop until there are no more dirty cells
+	while( !dirtyCells.empty() )
+	{
+		// update domain of dirty cell
+		Cell* cell = dirtyCells.dequeue();
+		QSet<char> cellChanges = cell->updateDomain();
+
+		// if the domain changes
+		if( !cellChanges.empty() )
+		{
+			// add changes to the running diff
+			changes[cell] += cellChanges;
+
+			// add dependents to queue
+			auto depCells = cell->dependentCells();
+			for( auto dep=depCells.constBegin(); dep!=depCells.constEnd(); ++dep )
+			{
+				dirtyCells.enqueue(*dep);
+			}
+		}
+		// else nothing to be done
+	}
+	return changes;
 }

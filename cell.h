@@ -8,11 +8,9 @@ class Cell
 {
 public:
 
-	// represents an unknown value for the cell
 	static const char UNKNOWN = -1;
 	static QSet<char> fullDomain;
 
-	// constructor, fixes position and value of cell
 	Cell(QList<Cell*> &row, QList<Cell*> &column, QList<Cell*> &block, char value = UNKNOWN);
 
 	void setDomain(QSet<char> newDomain);
@@ -21,10 +19,11 @@ public:
 	// returns a set of cells dependent on this one
 	QList<Cell*> dependentCells() const;
 
-	// attempts to set value of cell, returns false if invalid
 	bool setValue(char value, bool given = false);
 	char value() const;
 	bool isGiven() const;
+
+	QSet<char> updateDomain();
 
 private:
 	QList<Cell*>& row;

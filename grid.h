@@ -5,6 +5,8 @@
 #include <QTextStream>
 #include <QStringList>
 #include <QSet>
+#include <QHash>
+#include <QQueue>
 #include <stdexcept>
 
 #include "cell.h"
@@ -19,10 +21,12 @@ public:
 
 	static Grid* parse(const QString filename);
 	static const QString alphabet(int base);
-	int size();
+	int size() const;
 	Cell* cellAt(int row, int column) const;
-	QSet<char> fullDomain();
+	QSet<char> fullDomain() const;
 	const QString alphabet() const;
+
+	QHash<Cell*, QSet<char> > fixArcConsistency(Cell* dirtyCell = nullptr);
 
 private:
 

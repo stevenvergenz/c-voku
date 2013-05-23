@@ -70,3 +70,33 @@ char Cell::value() const {
 bool Cell::isGiven() const {
 	return given;
 }
+
+
+QSet<char> Cell::updateDomain()
+{
+	QList<Cell*> depCells = dependentCells();
+	QSet<char> domainLeavings;
+
+	// arc consistency of cell -> dirty
+	// for all v1 in cell.domain, there exists v2 in dirty.domain such that v1 != v2
+	// if not, remove v1 from cell.domain
+	for( auto dep=depCells.constBegin(); dep!=depCells.constEnd(); ++dep )
+	{
+		Cell* depCell = *dep;
+		for( auto val=_domain.begin(); val!=_domain.end(); )
+		{
+			int invalidEntries = depCell->domain().contains(*val) ? 1 : 0;
+			if( depCell->value() == *val || depCell->domain().size()-invalidEntries == 0 ){
+				//qDebug() << "Removing a value";
+				domainLeavings.insert(*val);
+				val = _domain.erase(val);
+			}
+			else {
+				//qDebug() << "NOT removing a value";
+				++val;
+			}
+		}
+	}
+
+	return domainLeavings;
+}

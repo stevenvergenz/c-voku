@@ -3,7 +3,7 @@
 GridModel::GridModel(Grid& grid, QObject *parent) : QAbstractTableModel(parent), _grid(grid)
 {
 	givenFont.setWeight( QFont::Bold );
-	if( grid.size() > 9 ){
+	if( _grid.size() > 9 ){
 		givenFont.setPointSize(12);
 		normalFont.setPointSize(12);
 	}
@@ -102,6 +102,7 @@ bool GridModel::setData(const QModelIndex& index, const QVariant& value, int rol
 		if( !value.toString().trimmed().isEmpty() ){
 			char val = _grid.alphabet().indexOf( value.toString() );
 			if( subject->setValue(val) ){
+				_grid.fixArcConsistency(subject);
 				emit dataChanged(index, index);
 				return true;
 			}
