@@ -2,7 +2,9 @@
 
 GridModel::GridModel(Grid& grid, QObject *parent) : QAbstractTableModel(parent), _grid(grid)
 {
-
+	givenFont.setWeight( QFont::Bold );
+	givenFont.setPointSize(14);
+	normalFont.setPointSize(14);
 }
 
 int GridModel::rowCount(const QModelIndex& parent) const
@@ -47,11 +49,11 @@ QVariant GridModel::data(const QModelIndex& index, int role) const
 			qSort(d);
 
 			if( d.isEmpty() ){
-				if( subject->isGiven() ){
+				if( subject->value() != Cell::UNKNOWN ){
 					return QVariant();
 				}
 				else {
-					return QVariant("No domain");
+					return QVariant("No domain!");
 				}
 			}
 			else {
@@ -66,7 +68,15 @@ QVariant GridModel::data(const QModelIndex& index, int role) const
 		}
 
 		case Qt::FontRole:
+		{
+			if( subject->isGiven() ){
+				return QVariant(givenFont);
+			}
+			else {
+				return QVariant(normalFont);
+			}
 			break;
+		}
 		case Qt::BackgroundRole:
 			break;
 		case Qt::ForegroundRole:

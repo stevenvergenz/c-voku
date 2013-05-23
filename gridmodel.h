@@ -3,6 +3,8 @@
 
 #include <QAbstractTableModel>
 #include <QDebug>
+#include <QFont>
+
 #include "grid.h"
 
 class GridModel : public QAbstractTableModel
@@ -24,7 +26,7 @@ public slots:
 
 private:
 	Grid& _grid;
-	
+	QFont givenFont, normalFont;
 };
 
 #endif // GRIDMODEL_H
