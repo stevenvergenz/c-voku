@@ -23,3 +23,7 @@ int PuzzleView::sizeHintForRow(int row) const {
 int PuzzleView::sizeHintForColumn(int column) const {
 	return width()/model()->columnCount();
 }
+
+void PuzzleView::columnCountChanged(int oldCount, int newCount){
+	resizeColumnsToContents();
+}

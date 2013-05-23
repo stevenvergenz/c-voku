@@ -125,7 +125,10 @@ Grid* Grid::parse(const QString filename)
 	double dBase = (sqrt(5+4*length)-1)/2;
 	dBase *= dBase;
 	int base = qRound(dBase);
-	if( abs(dBase-base)>0.01 || Grid::alphabet(base) == "" ){
+	double dBlockBase = sqrt((double)base);
+	int blockBase = qRound(dBlockBase);
+
+	if( abs(dBase-base)>0.01 || abs(dBlockBase-blockBase)>0.01 || Grid::alphabet(base) == "" ){
 		throw Exception("Input not in a valid base");
 	}
 
@@ -138,8 +141,8 @@ Grid* Grid::parse(const QString filename)
 		for( int c=0; c<newGrid->size(); c++ ){
 
 			// calculate the input row/column for each cell
-			int rf = r + r/base;
-			int cf = c + c/base;
+			int rf = r + r/blockBase;
+			int cf = c + c/blockBase;
 
 			QChar symbol = buffer[rf][cf];
 
@@ -147,6 +150,7 @@ Grid* Grid::parse(const QString filename)
 			if( alpha.indexOf(symbol) != -1 ){
 				bool valid = newGrid->cellAt(r,c)->setValue(alpha.indexOf(symbol), true);
 				if( !valid ){
+					delete newGrid;
 					throw Exception(
 						QString("Input contains illegal placement at (%1,%2)").arg(r,c)
 					);
@@ -161,7 +165,9 @@ Grid* Grid::parse(const QString filename)
 
 			// anything else, and we've got a problem
 			else {
-				throw Exception( QString("Invalid symbol '%1' at (%2,%3)").arg(symbol, rf, cf) );
+				delete newGrid;
+				throw Exception( QString("Invalid symbol '%1' at (%2,%3)")
+					.arg(symbol, QString::number(rf), QString::number(cf)) );
 			}
 
 		}// column

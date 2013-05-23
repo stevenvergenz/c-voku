@@ -16,7 +16,8 @@ public:
 signals:
 	
 public slots:
-	
+	void columnCountChanged(int oldCount, int newCount);
+
 protected:
 	int sizeHintForRow(int row) const;
 	int sizeHintForColumn(int column) const;
