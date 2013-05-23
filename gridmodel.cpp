@@ -3,8 +3,14 @@
 GridModel::GridModel(Grid& grid, QObject *parent) : QAbstractTableModel(parent), _grid(grid)
 {
 	givenFont.setWeight( QFont::Bold );
-	givenFont.setPointSize(14);
-	normalFont.setPointSize(14);
+	if( grid.size() > 9 ){
+		givenFont.setPointSize(12);
+		normalFont.setPointSize(12);
+	}
+	else {
+		givenFont.setPointSize(14);
+		normalFont.setPointSize(14);
+	}
 }
 
 int GridModel::rowCount(const QModelIndex& parent) const
@@ -92,13 +98,22 @@ bool GridModel::setData(const QModelIndex& index, const QVariant& value, int rol
 {
 	if( role == Qt::EditRole )
 	{
-		char val = _grid.alphabet().indexOf( value.toString() );
 		Cell* subject = _grid.cellAt(index.row(), index.column());
-		if( subject->setValue(val) ){
-			emit dataChanged(index, index);
-			return true;
+		if( !value.toString().trimmed().isEmpty() ){
+			char val = _grid.alphabet().indexOf( value.toString() );
+			if( subject->setValue(val) ){
+				emit dataChanged(index, index);
+				return true;
+			}
+			else return false;
 		}
-		else return false;
+		else {
+			if( subject->setValue(Cell::UNKNOWN) ){
+				emit dataChanged(index,index);
+				return true;
+			}
+			else return false;
+		}
 	}
 	else return false;
 }

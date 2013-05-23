@@ -1,5 +1,7 @@
 #include "cell.h"
 
+QSet<char> Cell::fullDomain;
+
 Cell::Cell(QList<Cell*>& row, QList<Cell*>& column, QList<Cell*>& block, char value)
 : row(row), column(column), block(block), _value(value), given(false)
 {
@@ -50,8 +52,15 @@ bool Cell::setValue(char value, bool given)
 
 		return true;
 	}
-	else
-		return false;
+	else if( value == UNKNOWN ){
+		this->_value = value;
+		_domain.clear();
+		foreach( char val, Cell::fullDomain ){
+			_domain.insert(val);
+		}
+		return true;
+	}
+	else return false;
 }
 
 char Cell::value() const {

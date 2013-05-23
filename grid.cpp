@@ -53,8 +53,10 @@ Grid::Grid(int size) : _size(size)
 	double actualSqrt = sqrt((double)size);
 	int blockSize = qRound( actualSqrt );
 	if( abs((double)blockSize - actualSqrt) > 0.01 ){
-		throw std::invalid_argument("Grid size is not a square");
+		throw Exception("Grid size is not a square");
 	}
+
+	Cell::fullDomain = fullDomain();
 
 	// start initializing cells
 	for( int r=0; r<size; r++ )

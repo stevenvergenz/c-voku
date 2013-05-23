@@ -10,6 +10,7 @@ public:
 
 	// represents an unknown value for the cell
 	static const char UNKNOWN = -1;
+	static QSet<char> fullDomain;
 
 	// constructor, fixes position and value of cell
 	Cell(QList<Cell*> &row, QList<Cell*> &column, QList<Cell*> &block, char value = UNKNOWN);
