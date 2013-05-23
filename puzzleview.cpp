@@ -6,6 +6,9 @@ PuzzleView::PuzzleView(QWidget *parent) : QTableView(parent)
 	policy->setHeightForWidth(true);
 	setSizePolicy(*policy);
 	qDebug() << "Size policy: " << sizePolicy().hasHeightForWidth() << endl;
+
+	horizontalHeader()->setResizeMode(QHeaderView::Stretch);
+	verticalHeader()->setResizeMode(QHeaderView::Stretch);
 }
 
 int PuzzleView::heightForWidth(int w) const {
@@ -22,8 +25,4 @@ int PuzzleView::sizeHintForRow(int row) const {
 
 int PuzzleView::sizeHintForColumn(int column) const {
 	return width()/model()->columnCount();
-}
-
-void PuzzleView::columnCountChanged(int oldCount, int newCount){
-	resizeColumnsToContents();
 }

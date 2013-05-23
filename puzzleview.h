@@ -4,6 +4,7 @@
 #include <QTableView>
 #include <QDebug>
 #include <QSizePolicy>
+#include <QHeaderView>
 
 class PuzzleView : public QTableView
 {
@@ -16,7 +17,6 @@ public:
 signals:
 	
 public slots:
-	void columnCountChanged(int oldCount, int newCount);
 
 protected:
 	int sizeHintForRow(int row) const;
