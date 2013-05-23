@@ -5,7 +5,6 @@ PuzzleView::PuzzleView(QWidget *parent) : QTableView(parent)
 	QSizePolicy* policy = new QSizePolicy();
 	policy->setHeightForWidth(true);
 	setSizePolicy(*policy);
-	qDebug() << "Size policy: " << sizePolicy().hasHeightForWidth() << endl;
 
 	horizontalHeader()->setResizeMode(QHeaderView::Stretch);
 	verticalHeader()->setResizeMode(QHeaderView::Stretch);

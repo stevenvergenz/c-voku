@@ -2,6 +2,7 @@
 #define CELL_H
 
 #include <QSet>
+#include <QDebug>
 
 class Cell
 {
