@@ -164,7 +164,7 @@
     <property name="title">
      <string>&amp;Solver</string>
     </property>
-    <addaction name="actionCalculate_domains"/>
+    <addaction name="action_Color_domains"/>
    </widget>
    <widget class="QMenu" name="menu_Help">
     <property name="title">
@@ -201,6 +201,17 @@
   <action name="actionAbout_Qt">
    <property name="text">
     <string>About &amp;Qt...</string>
+   </property>
+  </action>
+  <action name="action_Color_domains">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Color domains</string>
    </property>
   </action>
  </widget>

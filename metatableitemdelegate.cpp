@@ -12,6 +12,9 @@ MetatableItemDelegate::MetatableItemDelegate(QObject *parent)
 
 void MetatableItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
+	// paint like normal
+	this->QStyledItemDelegate::paint(painter, option, index);
+
 	painter->save();
 
 	// figure out where the lines should go
@@ -59,5 +62,5 @@ void MetatableItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem 
 	}*/
 
 	painter->restore();
-	this->QStyledItemDelegate::paint(painter, option, index);
+
 }

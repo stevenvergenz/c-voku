@@ -2,6 +2,7 @@
 
 GridModel::GridModel(Grid& grid, QObject *parent) : QAbstractTableModel(parent), _grid(grid)
 {
+	showDomainColor = false;
 	givenFont.setWeight( QFont::Bold );
 	if( _grid.size() > 9 ){
 		givenFont.setPointSize(12);
@@ -29,8 +30,8 @@ QVariant GridModel::data(const QModelIndex& index, int role) const
 	switch(role)
 	{
 		// sets the actual content of the cell
-		case Qt::DisplayRole:
 		case Qt::EditRole:
+		case Qt::DisplayRole:
 		{
 			if( subject->value() == Cell::UNKNOWN )
 				return QVariant("");
@@ -84,7 +85,19 @@ QVariant GridModel::data(const QModelIndex& index, int role) const
 			break;
 		}
 		case Qt::BackgroundRole:
+		{
+			if( showDomainColor && subject->value() == Cell::UNKNOWN ){
+				if( subject->domain().size() > 0 ){
+					double restrictionRatio = (double)subject->domain().size()/subject->fullDomain.size();
+					QColor bgColor(55+200*restrictionRatio, 255, 55+200*restrictionRatio);
+					return QVariant(bgColor);
+				}
+				else {
+					return QVariant( QColor("red") );
+				}
+			}
 			break;
+		}
 		case Qt::ForegroundRole:
 			break;
 		default:
@@ -128,4 +141,10 @@ Qt::ItemFlags GridModel::flags(const QModelIndex& index) const
 	}
 
 	return retFlags;
+}
+
+void GridModel::setShowDomainColor(bool value)
+{
+	showDomainColor = value;
+	emit dataChanged( createIndex(0,0), createIndex(rowCount()-1, columnCount()-1),{Qt::BackgroundRole} );
 }

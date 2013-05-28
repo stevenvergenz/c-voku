@@ -4,6 +4,7 @@
 #include <QAbstractTableModel>
 #include <QDebug>
 #include <QFont>
+#include <QColor>
 
 #include "grid.h"
 
@@ -23,10 +24,12 @@ public:
 signals:
 	
 public slots:
+	void setShowDomainColor(bool value);
 
 private:
 	Grid& _grid;
 	QFont givenFont, normalFont;
+	bool showDomainColor;
 };
 
 #endif // GRIDMODEL_H

@@ -8,6 +8,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 	// connect the open menu item
 	connect( ui->actionOpen, SIGNAL(triggered()), this, SLOT(openFile()) );
+
 }
 
 MainWindow::~MainWindow()
@@ -44,5 +45,9 @@ void MainWindow::openFile()
 
 	grid = newGrid;
 	model = newGridModel;
+
+	connect( ui->action_Color_domains, SIGNAL(toggled(bool)), model, SLOT(setShowDomainColor(bool)) );
+	model->setShowDomainColor(ui->action_Color_domains->isChecked());
+
 	ui->tableView->setModel(model);
 }
