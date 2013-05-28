@@ -83,22 +83,20 @@ QSet<char> Cell::updateDomain()
 	for( auto dep=depCells.constBegin(); dep!=depCells.constEnd(); ++dep )
 	{
 		Cell* depCell = *dep;
+
 		for( auto val=_domain.begin(); val!=_domain.end(); )
 		{
 			int invalidEntries = depCell->domain().contains(*val) ? 1 : 0;
 			if( (depCell->value() != UNKNOWN && depCell->value() == *val)
 			|| (!depCell->value() == UNKNOWN && depCell->domain().size()-invalidEntries == 0) )
 			{
-				//qDebug() << "Removing a value";
 				domainLeavings.insert(*val);
 				val = _domain.erase(val);
 			}
 			else {
-				//qDebug() << "NOT removing a value";
 				++val;
 			}
 		}
 	}
-
 	return domainLeavings;
 }

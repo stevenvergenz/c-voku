@@ -110,6 +110,7 @@ bool GridModel::setData(const QModelIndex& index, const QVariant& value, int rol
 		}
 		else {
 			if( subject->setValue(Cell::UNKNOWN) ){
+				subject->updateDomain();
 				emit dataChanged(index,index);
 				return true;
 			}

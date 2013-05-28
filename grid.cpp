@@ -64,7 +64,7 @@ Grid::Grid(int size) : _size(size)
 		for( int c=0; c<size; c++ )
 		{
 			// calculate the block of the current cell
-			int b = blockSize*(r%blockSize) + c%blockSize;
+			int b = blockSize*(r/blockSize) + c/blockSize;
 
 			// create new cell
 			Cell* newCell = new Cell(rows[r], columns[c], blocks[b], Cell::UNKNOWN);
@@ -178,9 +178,6 @@ Grid* Grid::parse(const QString filename)
 	// the whole file has been parsed, now update domains and return
 	qDebug() << "Fixing arc consistency";
 	auto diff = newGrid->fixArcConsistency();
-	for( auto i=diff.begin(); i!=diff.end(); ++i ){
-		qDebug() << QString("Removed %1 values").arg(QString::number(i.value().size()));
-	}
 	return newGrid;
 }
 
