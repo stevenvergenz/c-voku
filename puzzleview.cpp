@@ -9,8 +9,8 @@ PuzzleView::PuzzleView(QWidget *parent) : QTableView(parent)
 
 	this->setItemDelegate(new MetatableItemDelegate());
 
-	horizontalHeader()->setResizeMode(QHeaderView::Stretch);
-	verticalHeader()->setResizeMode(QHeaderView::Stretch);
+	horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+	verticalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 }
 
 int PuzzleView::heightForWidth(int w) const {
@@ -18,7 +18,10 @@ int PuzzleView::heightForWidth(int w) const {
 }
 
 QSize PuzzleView::sizeHint() const {
-	return QSize(400,400);
+	if( model() != nullptr )
+		return QSize(20*model()->columnCount(),20*model()->rowCount());
+	else
+		return QSize(400,400);
 }
 
 int PuzzleView::sizeHintForRow(int row) const {
