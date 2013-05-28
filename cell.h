@@ -3,6 +3,7 @@
 
 #include <QSet>
 #include <QDebug>
+#include <QPoint>
 
 class Cell
 {
@@ -11,7 +12,7 @@ public:
 	static const char UNKNOWN = -1;
 	static QSet<char> fullDomain;
 
-	Cell(QList<Cell*> &row, QList<Cell*> &column, QList<Cell*> &block, char value = UNKNOWN);
+	Cell(QList<Cell*> &row, int rowNum, QList<Cell*> &column, int columnNum, QList<Cell*> &block, char value = UNKNOWN);
 
 	void setDomain(QSet<char> newDomain);
 	const QSet<char> domain() const;
@@ -22,6 +23,8 @@ public:
 	bool setValue(char value, bool given = false);
 	char value() const;
 	bool isGiven() const;
+	int rowIndex() const;
+	int columnIndex() const;
 
 	QSet<char> updateDomain();
 
@@ -29,6 +32,8 @@ private:
 	QList<Cell*>& row;
 	QList<Cell*>& column;
 	QList<Cell*>& block;
+
+	QPoint location;
 
 	char _value;
 	bool given;

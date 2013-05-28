@@ -112,23 +112,32 @@ bool GridModel::setData(const QModelIndex& index, const QVariant& value, int rol
 	if( role == Qt::EditRole )
 	{
 		Cell* subject = _grid.cellAt(index.row(), index.column());
+		char val = Cell::UNKNOWN;
 		if( !value.toString().trimmed().isEmpty() ){
-			char val = _grid.alphabet().indexOf( value.toString() );
-			if( subject->setValue(val) ){
-				_grid.fixArcConsistency(subject);
-				emit dataChanged(index, index);
-				return true;
-			}
-			else return false;
+			val = _grid.alphabet().indexOf( value.toString() );
 		}
-		else {
-			if( subject->setValue(Cell::UNKNOWN) ){
+
+		if( subject->setValue(val) )
+		{
+			if( val == Cell::UNKNOWN )
 				subject->updateDomain();
-				emit dataChanged(index,index);
-				return true;
+			auto diff = _grid.fixArcConsistency(subject);
+
+			// calculate change in table space
+			int minRow=_grid.size(), minCol=_grid.size(), maxRow=-1, maxCol=-1;
+			for( auto i=diff.keys().constBegin(); i!=diff.keys().constEnd(); ++i ){
+				Cell* cell = *i;
+				if( cell->rowIndex() > maxRow ) maxRow = cell->rowIndex();
+				if( cell->rowIndex() < minRow ) minRow = cell->rowIndex();
+				if( cell->columnIndex() > maxCol ) maxCol = cell->columnIndex();
+				if( cell->rowIndex() < minCol ) minCol = cell->columnIndex();
 			}
-			else return false;
+
+			emit dataChanged( createIndex(minRow, minCol),
+							  createIndex(maxRow, maxCol), {Qt::DisplayRole, Qt::BackgroundRole} );
+			return true;
 		}
+		else return false;
 	}
 	else return false;
 }
@@ -146,5 +155,5 @@ Qt::ItemFlags GridModel::flags(const QModelIndex& index) const
 void GridModel::setShowDomainColor(bool value)
 {
 	showDomainColor = value;
-	emit dataChanged( createIndex(0,0), createIndex(rowCount()-1, columnCount()-1),{Qt::BackgroundRole} );
+	emit dataChanged( createIndex(0,0), createIndex(rowCount()-1, columnCount()-1), {Qt::BackgroundRole} );
 }

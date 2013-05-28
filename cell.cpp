@@ -2,8 +2,8 @@
 
 QSet<char> Cell::fullDomain;
 
-Cell::Cell(QList<Cell*>& row, QList<Cell*>& column, QList<Cell*>& block, char value)
-: row(row), column(column), block(block), _value(value), given(false)
+Cell::Cell(QList<Cell*>& row, int rowNum, QList<Cell*>& column, int columnNum, QList<Cell*>& block, char value)
+: row(row), column(column), block(block), location(columnNum, rowNum), _value(value), given(false)
 {
 	if( value != UNKNOWN ){
 		given = true;
@@ -71,6 +71,12 @@ bool Cell::isGiven() const {
 	return given;
 }
 
+int Cell::rowIndex() const {
+	return location.y();
+}
+int Cell::columnIndex() const {
+	return location.x();
+}
 
 QSet<char> Cell::updateDomain()
 {
