@@ -22,6 +22,7 @@ public:
 
 public slots:
 	void openFile();
+	void fillSingleDomains();
 	
 private:
 	Ui::MainWindow *ui;

@@ -16,6 +16,7 @@ public:
 
 	void setDomain(QSet<char> newDomain);
 	const QSet<char> domain() const;
+	void appendToDomain(QSet<char> diff);
 
 	// returns a set of cells dependent on this one
 	QList<Cell*> dependentCells() const;

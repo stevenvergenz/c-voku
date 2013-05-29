@@ -19,6 +19,12 @@ const QSet<char> Cell::domain() const {
 	return _domain;
 }
 
+void Cell::appendToDomain(QSet<char> diff)
+{
+	for( auto i=diff.constBegin(); i!=diff.constEnd(); ++i ){
+		_domain.insert(*i);
+	}
+}
 
 QList<Cell*> Cell::dependentCells() const
 {

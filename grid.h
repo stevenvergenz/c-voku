@@ -26,8 +26,14 @@ public:
 	QSet<char> fullDomain() const;
 	const QString alphabet() const;
 
+	Cell* getSafestCell() const;
+	char getSafestValue(Cell* target);
+
 	QHash<Cell*, QSet<char> > fixArcConsistency(Cell* dirtyCell = nullptr);
+	void unfixArcConsistency( QHash<Cell*, QSet<char> > diff );
 	QHash<Cell*, QSet<char> > broadenDomains(Cell* unsetCell);
+
+	QList<Cell *> solve(bool guess = false);
 
 private:
 

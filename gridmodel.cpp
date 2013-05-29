@@ -87,15 +87,10 @@ QVariant GridModel::data(const QModelIndex& index, int role) const
 		case Qt::BackgroundRole:
 		{
 			if( showDomainColor && subject->value() == Cell::UNKNOWN ){
-				if( subject->domain().size() > 0 ){
-					double restrictionRatio = (double)subject->domain().size()/subject->fullDomain.size();
-					//QColor bgColor(55+200*restrictionRatio, 255, 55+200*restrictionRatio);
-					QColor bgColor = QColor::fromHsv(255*restrictionRatio, 100, 255);
-					return QVariant(bgColor);
-				}
-				else {
-					return QVariant( QColor("red") );
-				}
+				double restrictionRatio = (double)subject->domain().size()/subject->fullDomain.size();
+				//QColor bgColor(55+200*restrictionRatio, 255, 55+200*restrictionRatio);
+				QColor bgColor = QColor::fromHsv(255*restrictionRatio, 100, 255);
+				return QVariant(bgColor);
 			}
 			break;
 		}
@@ -127,17 +122,7 @@ bool GridModel::setData(const QModelIndex& index, const QVariant& value, int rol
 				diff = _grid.fixArcConsistency(subject);
 
 			// calculate change in table space
-			int minRow=_grid.size(), minCol=_grid.size(), maxRow=-1, maxCol=-1;
-			for( auto i=diff.keys().constBegin(); i!=diff.keys().constEnd(); ++i ){
-				Cell* cell = *i;
-				if( cell->rowIndex() > maxRow ) maxRow = cell->rowIndex();
-				if( cell->rowIndex() < minRow ) minRow = cell->rowIndex();
-				if( cell->columnIndex() > maxCol ) maxCol = cell->columnIndex();
-				if( cell->rowIndex() < minCol ) minCol = cell->columnIndex();
-			}
-
-			emit dataChanged( createIndex(minRow, minCol),
-							  createIndex(maxRow, maxCol), {Qt::DisplayRole, Qt::BackgroundRole} );
+			cellsChanged(diff.keys());
 			return true;
 		}
 		else return false;
@@ -159,4 +144,20 @@ void GridModel::setShowDomainColor(bool value)
 {
 	showDomainColor = value;
 	emit dataChanged( createIndex(0,0), createIndex(rowCount()-1, columnCount()-1), {Qt::BackgroundRole} );
+}
+
+void GridModel::cellsChanged(QList<Cell *> diff)
+{
+	// calculate change in table space
+	int minRow=_grid.size(), minCol=_grid.size(), maxRow=-1, maxCol=-1;
+	for( auto i=diff.constBegin(); i!=diff.constEnd(); ++i ){
+		Cell* cell = *i;
+		if( cell->rowIndex() > maxRow ) maxRow = cell->rowIndex();
+		if( cell->rowIndex() < minRow ) minRow = cell->rowIndex();
+		if( cell->columnIndex() > maxCol ) maxCol = cell->columnIndex();
+		if( cell->rowIndex() < minCol ) minCol = cell->columnIndex();
+	}
+
+	emit dataChanged( createIndex(minRow, minCol),
+					  createIndex(maxRow, maxCol), {Qt::DisplayRole, Qt::BackgroundRole} );
 }

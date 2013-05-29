@@ -48,6 +48,12 @@ void MainWindow::openFile()
 
 	connect( ui->action_Color_domains, SIGNAL(toggled(bool)), model, SLOT(setShowDomainColor(bool)) );
 	model->setShowDomainColor(ui->action_Color_domains->isChecked());
+	connect( ui->action_Fill_in_single_domains, SIGNAL(triggered()), this, SLOT(fillSingleDomains()) );
 
 	ui->tableView->setModel(model);
+}
+
+void MainWindow::fillSingleDomains()
+{
+	model->cellsChanged(grid->solve(false));
 }

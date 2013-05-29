@@ -254,6 +254,14 @@ QHash<Cell*, QSet<char> > Grid::fixArcConsistency(Cell* dirtyCell)
 	return changes;
 }
 
+void Grid::unfixArcConsistency(QHash<Cell*, QSet<char> > diff)
+{
+	for( auto i=diff.begin(); i!=diff.end(); ++i ){
+		Cell* cell = i.key();
+		cell->appendToDomain(i.value());
+	}
+}
+
 QHash<Cell*, QSet<char> > Grid::broadenDomains(Cell *unsetCell)
 {
 	QQueue<Cell*> dirtyCells;
@@ -287,4 +295,107 @@ QHash<Cell*, QSet<char> > Grid::broadenDomains(Cell *unsetCell)
 
 	unsetCell->restrictDomain();
 	return diff;
+}
+
+Cell* Grid::getSafestCell() const
+{
+	QSet<Cell*> remainingCells;
+
+	// find the most constrained cells (fewest options in domain)
+	int minimumDomainSize = 100;
+	for( auto cellIter=cells.begin(); cellIter!=cells.end(); ++cellIter )
+	{
+		Cell* cell = *cellIter;
+		if( cell->domain().size() < minimumDomainSize && cell->value() == Cell::UNKNOWN ){
+			minimumDomainSize = cell->domain().size();
+			remainingCells.clear();
+		}
+		if( cell->domain().size() == minimumDomainSize ){
+			remainingCells.insert(cell);
+		}
+	}
+
+	// if there are no cells return null, otherwise return a minimum cell
+	if( remainingCells.size() == 0 )
+		return nullptr;
+	else
+		return remainingCells.values()[0];
+}
+
+// expects an unset cell with at least one option in its domain
+char Grid::getSafestValue(Cell *target)
+{
+	QSet<char> originalDomain = target->domain();
+	char safeVal = Cell::UNKNOWN;
+	int minimumChange = 1e6;
+
+	// loop over each possible value of target cell
+	for( auto i=originalDomain.constBegin(); i!=originalDomain.constEnd(); ++i )
+	{
+		// assign the value to the cell and rebalance
+		target->setValue(*i);
+		auto diff = fixArcConsistency(target);
+		int counter = 0;
+		for( auto j=diff.begin(); j!=diff.end(); ++j ){
+			QSet<char> diffDomain = j.value();
+			counter += diffDomain.size();
+		}
+
+		// assign minimum if current value beats it
+		if( counter < minimumChange ){
+			minimumChange = counter;
+			safeVal = *i;
+		}
+
+		// reset grid to pre-check levels
+		unfixArcConsistency(diff);
+	}
+	target->setValue(Cell::UNKNOWN);
+	target->setDomain(originalDomain);
+	return safeVal;
+}
+
+QList<Cell*> Grid::solve(bool guess)
+{
+	// get the safest cell
+	QSet<Cell*> diffList;
+	Cell* target = getSafestCell();
+
+	while( target != nullptr )
+	{
+		// the safest cell has no valid numbers, we made a mistake somewhere
+		if( target->domain().size() == 0 ){
+			qDebug() << "No solution";
+			break;
+		}
+
+		// the safest cell has just one possibility, choose it
+		else if( target->domain().size() == 1 )
+		{
+			// set cell right away, no need to optimize
+			target->setValue( target->domain().values()[0] );
+			auto diff = fixArcConsistency(target);
+
+			// add changes
+			diffList.insert(target);
+			for( auto i=diff.constBegin(); i!=diff.constEnd(); ++i ){
+				diffList.insert(i.key());
+			}
+		}
+
+		// the safest cell has multiple options, guess and continue
+		else if( guess ){
+			// do make a guess and continue
+		}
+
+		// multiple options, and guessing not allowed, break
+		else {
+			break;
+		}
+
+		// get the next cell
+		target = getSafestCell();
+	}
+
+	return diffList.values();
 }
