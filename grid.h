@@ -27,6 +27,7 @@ public:
 	const QString alphabet() const;
 
 	QHash<Cell*, QSet<char> > fixArcConsistency(Cell* dirtyCell = nullptr);
+	QHash<Cell*, QSet<char> > broadenDomains(Cell* unsetCell);
 
 private:
 

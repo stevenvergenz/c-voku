@@ -165,6 +165,7 @@
      <string>&amp;Solver</string>
     </property>
     <addaction name="action_Color_domains"/>
+    <addaction name="action_Fill_in_single_domains"/>
    </widget>
    <widget class="QMenu" name="menu_Help">
     <property name="title">
@@ -181,11 +182,6 @@
   <action name="actionE_xit">
    <property name="text">
     <string>E&amp;xit</string>
-   </property>
-  </action>
-  <action name="actionCalculate_domains">
-   <property name="text">
-    <string>Calculate &amp;domains</string>
    </property>
   </action>
   <action name="actionOpen">
@@ -212,6 +208,11 @@
    </property>
    <property name="text">
     <string>&amp;Color domains</string>
+   </property>
+  </action>
+  <action name="action_Fill_in_single_domains">
+   <property name="text">
+    <string>&amp;Fill in single domains</string>
    </property>
   </action>
  </widget>

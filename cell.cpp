@@ -52,12 +52,9 @@ bool Cell::setValue(char value, bool given)
 
 		return true;
 	}
-	else if( value == UNKNOWN ){
+	else if( value == UNKNOWN && _value != UNKNOWN ){
 		this->_value = value;
-		_domain.clear();
-		foreach( char val, Cell::fullDomain ){
-			_domain.insert(val);
-		}
+		broadenDomain();
 		return true;
 	}
 	else return false;
@@ -78,7 +75,7 @@ int Cell::columnIndex() const {
 	return location.x();
 }
 
-QSet<char> Cell::updateDomain()
+QSet<char> Cell::restrictDomain()
 {
 	QList<Cell*> depCells = dependentCells();
 	QSet<char> domainLeavings;
@@ -105,4 +102,12 @@ QSet<char> Cell::updateDomain()
 		}
 	}
 	return domainLeavings;
+}
+
+void Cell::broadenDomain()
+{
+	_domain.clear();
+	foreach( char val, Cell::fullDomain ){
+		_domain.insert(val);
+	}
 }

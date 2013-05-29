@@ -26,7 +26,8 @@ public:
 	int rowIndex() const;
 	int columnIndex() const;
 
-	QSet<char> updateDomain();
+	QSet<char> restrictDomain();
+	void broadenDomain();
 
 private:
 	QList<Cell*>& row;

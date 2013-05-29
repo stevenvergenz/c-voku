@@ -89,7 +89,8 @@ QVariant GridModel::data(const QModelIndex& index, int role) const
 			if( showDomainColor && subject->value() == Cell::UNKNOWN ){
 				if( subject->domain().size() > 0 ){
 					double restrictionRatio = (double)subject->domain().size()/subject->fullDomain.size();
-					QColor bgColor(55+200*restrictionRatio, 255, 55+200*restrictionRatio);
+					//QColor bgColor(55+200*restrictionRatio, 255, 55+200*restrictionRatio);
+					QColor bgColor = QColor::fromHsv(255*restrictionRatio, 100, 255);
 					return QVariant(bgColor);
 				}
 				else {
@@ -119,9 +120,11 @@ bool GridModel::setData(const QModelIndex& index, const QVariant& value, int rol
 
 		if( subject->setValue(val) )
 		{
+			QHash<Cell*, QSet<char> > diff;
 			if( val == Cell::UNKNOWN )
-				subject->updateDomain();
-			auto diff = _grid.fixArcConsistency(subject);
+				diff = _grid.broadenDomains(subject);
+			else
+				diff = _grid.fixArcConsistency(subject);
 
 			// calculate change in table space
 			int minRow=_grid.size(), minCol=_grid.size(), maxRow=-1, maxCol=-1;

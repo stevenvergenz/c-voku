@@ -234,7 +234,7 @@ QHash<Cell*, QSet<char> > Grid::fixArcConsistency(Cell* dirtyCell)
 	{
 		// update domain of dirty cell
 		Cell* cell = dirtyCells.dequeue();
-		QSet<char> cellChanges = cell->updateDomain();
+		QSet<char> cellChanges = cell->restrictDomain();
 
 		// if the domain changes
 		if( !cellChanges.empty() )
@@ -252,4 +252,39 @@ QHash<Cell*, QSet<char> > Grid::fixArcConsistency(Cell* dirtyCell)
 		// else nothing to be done
 	}
 	return changes;
+}
+
+QHash<Cell*, QSet<char> > Grid::broadenDomains(Cell *unsetCell)
+{
+	QQueue<Cell*> dirtyCells;
+	QHash<Cell*, QSet<char> > diff;
+
+	// initialize set of cells to check
+	auto depCells = unsetCell->dependentCells();
+	for( auto dep=depCells.constBegin(); dep!=depCells.constEnd(); ++dep ){
+		dirtyCells.enqueue(*dep);
+	}
+	diff.insert(unsetCell, QSet<char>());
+
+	while( !dirtyCells.empty() )
+	{
+		Cell* dirty = dirtyCells.dequeue();
+
+		// broaden domain and re-restrict to check for changes
+		const QSet<char> oldDomain = dirty->domain();
+		dirty->broadenDomain();
+		dirty->restrictDomain();
+
+		// if there are changes, enqueue dirty cell's dependents
+		if( dirty->domain() != oldDomain ){
+			diff.insert(dirty, QSet<char>());
+			auto depCells = dirty->dependentCells();
+			for( auto dep=depCells.constBegin(); dep!=depCells.constEnd(); ++dep ){
+				dirtyCells.enqueue(*dep);
+			}
+		}
+	}
+
+	unsetCell->restrictDomain();
+	return diff;
 }
