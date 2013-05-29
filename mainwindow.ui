@@ -169,6 +169,7 @@
     </property>
     <addaction name="action_Color_domains"/>
     <addaction name="action_Fill_in_single_domains"/>
+    <addaction name="action_Solve"/>
    </widget>
    <widget class="QMenu" name="menu_Help">
     <property name="title">
@@ -209,13 +210,27 @@
    <property name="checked">
     <bool>true</bool>
    </property>
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>&amp;Color domains</string>
    </property>
   </action>
   <action name="action_Fill_in_single_domains">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>&amp;Fill in single domains</string>
+   </property>
+  </action>
+  <action name="action_Solve">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Solve</string>
    </property>
   </action>
  </widget>

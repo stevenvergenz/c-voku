@@ -394,6 +394,13 @@ QList<Cell*> Grid::solve(bool guess)
 		// the safest cell has multiple options, guess and continue
 		else if( guess ){
 			// do make a guess and continue
+			char bestValue = getSafestValue(target);
+			Logger::log( QString("Safest value for (%1,%2) is %3")
+				.arg(QString::number(target->rowIndex()), QString::number(target->columnIndex()),
+					alphabet().at(bestValue)
+				)
+			);
+			break;
 		}
 
 		// multiple options, and guessing not allowed, break
