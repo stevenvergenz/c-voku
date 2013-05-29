@@ -305,7 +305,10 @@ Cell* Grid::getSafestCell() const
 	for( auto cellIter=cells.begin(); cellIter!=cells.end(); ++cellIter )
 	{
 		Cell* cell = *cellIter;
-		if( cell->domain().size() < minimumDomainSize && cell->value() == Cell::UNKNOWN ){
+		if( cell->value() != Cell::UNKNOWN )
+			continue;
+
+		if( cell->domain().size() < minimumDomainSize ){
 			minimumDomainSize = cell->domain().size();
 			remainingCells.clear();
 		}
