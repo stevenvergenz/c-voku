@@ -11,6 +11,7 @@
 
 #include "cell.h"
 #include "exception.h"
+#include "logger.h"
 
 class Grid
 {

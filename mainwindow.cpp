@@ -8,7 +8,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 	// connect the open menu item
 	connect( ui->actionOpen, SIGNAL(triggered()), this, SLOT(openFile()) );
-
+	connect( Logger::instance(), SIGNAL(onMessage(QString)), this, SLOT(printLog(QString)) );
 }
 
 MainWindow::~MainWindow()
@@ -51,9 +51,17 @@ void MainWindow::openFile()
 	connect( ui->action_Fill_in_single_domains, SIGNAL(triggered()), this, SLOT(fillSingleDomains()) );
 
 	ui->tableView->setModel(model);
+	printLog(filename+" loaded");
 }
 
 void MainWindow::fillSingleDomains()
 {
 	model->cellsChanged(grid->solve(false));
+}
+
+void MainWindow::printLog(QString msg)
+{
+	QString formattedMsg = QString("[%1]: %2").arg( QTime::currentTime().toString("hh:mm:ss"), msg );
+
+	ui->txtLog->append(formattedMsg);
 }

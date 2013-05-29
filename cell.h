@@ -5,6 +5,8 @@
 #include <QDebug>
 #include <QPoint>
 
+#include "logger.h"
+
 class Cell
 {
 public:

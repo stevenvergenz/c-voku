@@ -55,7 +55,6 @@ bool Cell::setValue(char value, bool given)
 		this->_value = value;
 		_domain.clear();
 		this->given = given;
-
 		return true;
 	}
 	else if( value == UNKNOWN && _value != UNKNOWN ){

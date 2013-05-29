@@ -128,12 +128,15 @@
         </item>
        </layout>
       </widget>
-      <widget class="QTextEdit" name="textEdit">
+      <widget class="QTextEdit" name="txtLog">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
+       </property>
+       <property name="undoRedoEnabled">
+        <bool>false</bool>
        </property>
        <property name="readOnly">
         <bool>true</bool>

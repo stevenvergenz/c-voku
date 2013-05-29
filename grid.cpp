@@ -176,7 +176,6 @@ Grid* Grid::parse(const QString filename)
 	}// row
 
 	// the whole file has been parsed, now update domains and return
-	qDebug() << "Fixing arc consistency";
 	auto diff = newGrid->fixArcConsistency();
 	return newGrid;
 }
@@ -365,7 +364,9 @@ QList<Cell*> Grid::solve(bool guess)
 	{
 		// the safest cell has no valid numbers, we made a mistake somewhere
 		if( target->domain().size() == 0 ){
-			qDebug() << "No solution";
+			Logger::log(QString("Cell at (%1,%2) has no solution!").arg(
+				QString::number(target->rowIndex()), QString::number(target->columnIndex())
+			));
 			break;
 		}
 
@@ -374,6 +375,10 @@ QList<Cell*> Grid::solve(bool guess)
 		{
 			// set cell right away, no need to optimize
 			target->setValue( target->domain().values()[0] );
+			Logger::log(QString("Setting value of (%1,%2) to %3").arg(
+				QString::number(target->rowIndex()), QString::number(target->columnIndex()),
+				alphabet().at(target->value())
+			));
 			auto diff = fixArcConsistency(target);
 
 			// add changes

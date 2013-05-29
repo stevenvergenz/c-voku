@@ -4,7 +4,9 @@
 #include <QMainWindow>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QTime>
 
+#include "logger.h"
 #include "grid.h"
 #include "gridmodel.h"
 
@@ -23,6 +25,7 @@ public:
 public slots:
 	void openFile();
 	void fillSingleDomains();
+	void printLog(QString msg);
 	
 private:
 	Ui::MainWindow *ui;

@@ -20,7 +20,8 @@ SOURCES += main.cpp\
     gridmodel.cpp \
     puzzleview.cpp \
     exception.cpp \
-    metatableitemdelegate.cpp
+    metatableitemdelegate.cpp \
+    logger.cpp
 
 HEADERS  += mainwindow.h \
     cell.h \
@@ -28,6 +29,7 @@ HEADERS  += mainwindow.h \
     gridmodel.h \
     puzzleview.h \
     exception.h \
-    metatableitemdelegate.h
+    metatableitemdelegate.h \
+    logger.h
 
 FORMS    += mainwindow.ui

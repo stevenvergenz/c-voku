@@ -115,6 +115,10 @@ bool GridModel::setData(const QModelIndex& index, const QVariant& value, int rol
 
 		if( subject->setValue(val) )
 		{
+			Logger::log(QString("Setting value of (%1,%2) to %3").arg(
+				QString::number(subject->rowIndex()), QString::number(subject->columnIndex()),
+				_grid.alphabet().at(subject->value())
+			));
 			QHash<Cell*, QSet<char> > diff;
 			if( val == Cell::UNKNOWN )
 				diff = _grid.broadenDomains(subject);
