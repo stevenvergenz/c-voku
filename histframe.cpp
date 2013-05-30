@@ -30,7 +30,7 @@ void HistFrame::revertChanges()
 		changedCell->appendToDomain(i.value());
 	}*/
 
-	for( auto i=newValues.keys().begin(); i!=newValues.keys.end(); ++i ){
+	for( auto i=newValues.keys().begin(); i!=newValues.keys().end(); ++i ){
 		Cell* changedCell = *i;
 		changedCell->setValue(Cell::UNKNOWN, false);
 	}

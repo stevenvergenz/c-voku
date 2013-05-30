@@ -347,15 +347,15 @@ QQueue<char> Grid::getSafestValues(Cell *target)
 		// insert in place
 		bool inserted = false;
 		for( auto e=effectValues.begin(); e!=effectValues.end(); ++e ){
-			QPair p = *e;
+			QPair<char,int> p = *e;
 			if( p.second > counter ){
-				effectValues.insert(e, QPair(*i, counter));
+				effectValues.insert(e, QPair<char,int>(*i, counter));
 				inserted = true;
 				break;
 			}
 		}
 		if( !inserted )
-			effectValues.append( QPair(*i, counter) );
+			effectValues.append( QPair<char,int>(*i, counter) );
 
 		// reset grid to pre-check levels
 		unfixArcConsistency(diff);
@@ -412,10 +412,10 @@ QList<Cell*> Grid::solve(bool guess)
 		// the safest cell has multiple options, guess and continue
 		else if( guess ){
 			// do make a guess and continue
-			char bestValue = getSafestValue(target);
+			QQueue<char> priorities = getSafestValues(target);
 			Logger::log( QString("Safest value for (%1,%2) is %3")
 				.arg(QString::number(target->rowIndex()), QString::number(target->columnIndex()),
-					alphabet().at(bestValue)
+					alphabet().at(priorities.head())
 				)
 			);
 			break;

@@ -10,7 +10,7 @@
 class HistFrame
 {
 public:
-	HistFrame(Cell* decidingCell = nullptr, QQueue<char> values);
+	HistFrame(Cell* decidingCell, QQueue<char> values);
 
 	//void addDomainChanges(QHash<Cell*, QSet<char> > diff);
 	void addValue(Cell* cell, char value);
