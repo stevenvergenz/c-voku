@@ -39,7 +39,7 @@ const QString Grid::alphabet() const {
 /*
  * General constructor, takes size and populates a grid with empty cells
  */
-Grid::Grid(int size) : _size(size)
+Grid::Grid(int size) : QObject(), _size(size)
 {
 	// initialize the groups to be the appropriate size
 	for( int i=0; i<_size; i++ )
@@ -71,12 +71,16 @@ Grid::Grid(int size) : _size(size)
 			newCell->setDomain(fullDomain());
 
 			cells.append(newCell);
-
 			rows[r].append(newCell);
 			columns[c].append(newCell);
 			blocks[b].append(newCell);
+
+			connect( newCell, SIGNAL(valueChanged()), &mapper, SLOT(map()) );
+			mapper.setMapping( newCell, newCell );
 		}
 	}
+
+	history.push( new HistFrame(nullptr, QQueue<char>()) );
 }
 
 
@@ -87,6 +91,9 @@ Grid::~Grid()
 {
 	for( int i=0; i<cells.size(); i++ ){
 		delete cells[i];
+	}
+	while( history.size() > 0 ){
+		delete history.pop();
 	}
 }
 
@@ -175,8 +182,11 @@ Grid* Grid::parse(const QString filename)
 		}// column
 	}// row
 
+	connect( &(newGrid->mapper), SIGNAL(mapped(QObject*)), newGrid, SLOT(updateHistory(QObject*)) );
+
 	// the whole file has been parsed, now update domains and return
 	auto diff = newGrid->fixArcConsistency();
+
 	return newGrid;
 }
 
@@ -203,6 +213,28 @@ QSet<char> Grid::fullDomain() const
 	return retDomain;
 }
 
+void Grid::updateHistory(QObject *cell){
+	Cell* c = (Cell*)cell;
+	history.top()->addValue(c, c->value());
+	Logger::log("Adding value to history");
+}
+
+void Grid::setCheckpoint(){
+	Logger::log("Setting checkpoint");
+	history.push( new HistFrame(nullptr, QQueue<char>()) );
+}
+
+void Grid::restoreCheckpoint(){
+	Logger::log("Undoing changes since last checkpoint");
+	HistFrame* hist;
+	if( history.size() > 1 )
+		hist = history.pop();
+	else
+		hist = history.top();
+	hist->revertChanges();
+	if( !history.contains(hist) )
+		delete hist;
+}
 
 /*******************************************
  * Fix Arc Consistency

@@ -55,11 +55,13 @@ bool Cell::setValue(char value, bool given)
 		this->_value = value;
 		_domain.clear();
 		this->given = given;
+		emit valueChanged();
 		return true;
 	}
 	else if( value == UNKNOWN && _value != UNKNOWN ){
 		this->_value = value;
 		broadenDomain();
+		emit valueChanged();
 		return true;
 	}
 	else return false;

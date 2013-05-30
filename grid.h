@@ -1,21 +1,26 @@
 #ifndef GRID_H
 #define GRID_H
 
+#include <QObject>
 #include <QFile>
 #include <QTextStream>
 #include <QStringList>
 #include <QSet>
 #include <QHash>
 #include <QQueue>
+#include <QStack>
 #include <QList>
+#include <QSignalMapper>
 #include <stdexcept>
 
 #include "cell.h"
 #include "exception.h"
 #include "logger.h"
+#include "histframe.h"
 
-class Grid
+class Grid : public QObject
 {
+	Q_OBJECT
 public:
 
 	Grid(int size);
@@ -37,6 +42,11 @@ public:
 
 	QList<Cell *> solve(bool guess = false);
 
+public slots:
+	void updateHistory(QObject* cell);
+	void setCheckpoint();
+	void restoreCheckpoint();
+
 private:
 
 	int _size;
@@ -45,7 +55,8 @@ private:
 	QList<QList<Cell*> > columns;
 	QList<QList<Cell*> > blocks;
 
-
+	QStack<HistFrame*> history;
+	QSignalMapper mapper;
 };
 
 #endif // GRID_H

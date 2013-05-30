@@ -53,6 +53,10 @@ void MainWindow::openFile()
 	ui->action_Fill_in_single_domains->setEnabled(true);
 	connect( ui->action_Solve, SIGNAL(triggered()), this, SLOT(solve()) );
 	ui->action_Solve->setEnabled(true);
+	connect( ui->actionSet_checkpoint, SIGNAL(triggered()), grid, SLOT(setCheckpoint()) );
+	ui->actionSet_checkpoint->setEnabled(true);
+	connect( ui->action_Restore_checkpoint, SIGNAL(triggered()), grid, SLOT(restoreCheckpoint()) );
+	ui->action_Restore_checkpoint->setEnabled(true);
 
 	ui->tableView->setModel(model);
 	printLog(filename+" loaded");
@@ -72,4 +76,9 @@ void MainWindow::printLog(QString msg)
 	QString formattedMsg = QString("[%1]: %2").arg( QTime::currentTime().toString("hh:mm:ss"), msg );
 
 	ui->txtLog->append(formattedMsg);
+}
+
+void MainWindow::restoreCheckpoint(){
+	grid->restoreCheckpoint();
+	model->cellsChanged();
 }

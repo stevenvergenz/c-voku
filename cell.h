@@ -1,14 +1,17 @@
 #ifndef CELL_H
 #define CELL_H
 
+#include <QObject>
 #include <QSet>
 #include <QDebug>
 #include <QPoint>
 
 #include "logger.h"
 
-class Cell
+class Cell : public QObject
 {
+	Q_OBJECT
+
 public:
 
 	static const char UNKNOWN = -1;
@@ -31,6 +34,9 @@ public:
 
 	QSet<char> restrictDomain();
 	void broadenDomain();
+
+signals:
+	void valueChanged();
 
 private:
 	QList<Cell*>& row;

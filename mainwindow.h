@@ -27,6 +27,7 @@ public slots:
 	void fillSingleDomains();
 	void solve();
 	void printLog(QString msg);
+	void restoreCheckpoint();
 	
 private:
 	Ui::MainWindow *ui;

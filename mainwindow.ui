@@ -170,6 +170,8 @@
     <addaction name="action_Color_domains"/>
     <addaction name="action_Fill_in_single_domains"/>
     <addaction name="action_Solve"/>
+    <addaction name="actionSet_checkpoint"/>
+    <addaction name="action_Restore_checkpoint"/>
    </widget>
    <widget class="QMenu" name="menu_Help">
     <property name="title">
@@ -231,6 +233,22 @@
    </property>
    <property name="text">
     <string>&amp;Solve</string>
+   </property>
+  </action>
+  <action name="actionSet_checkpoint">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Set &amp;checkpoint</string>
+   </property>
+  </action>
+  <action name="action_Restore_checkpoint">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Restore checkpoint</string>
    </property>
   </action>
  </widget>
