@@ -7,6 +7,7 @@
 #include <QSet>
 #include <QHash>
 #include <QQueue>
+#include <QList>
 #include <stdexcept>
 
 #include "cell.h"
@@ -28,7 +29,7 @@ public:
 	const QString alphabet() const;
 
 	Cell* getSafestCell() const;
-	char getSafestValue(Cell* target);
+	QQueue<char> getSafestValues(Cell* target);
 
 	QHash<Cell*, QSet<char> > fixArcConsistency(Cell* dirtyCell = nullptr);
 	void unfixArcConsistency( QHash<Cell*, QSet<char> > diff );

@@ -8,9 +8,13 @@ PuzzleView::PuzzleView(QWidget *parent) : QTableView(parent)
 	setFocusPolicy(Qt::NoFocus);
 
 	this->setItemDelegate(new MetatableItemDelegate());
-
+#if QT_VERSION > 0x050000
 	horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 	verticalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+#else
+	horizontalHeader()->setResizeMode(QHeaderView::Stretch);
+	verticalHeader()->setResizeMode(QHeaderView::Stretch);
+#endif
 }
 
 int PuzzleView::heightForWidth(int w) const {

@@ -325,11 +325,12 @@ Cell* Grid::getSafestCell() const
 }
 
 // expects an unset cell with at least one option in its domain
-char Grid::getSafestValue(Cell *target)
+QQueue<char> Grid::getSafestValues(Cell *target)
 {
 	QSet<char> originalDomain = target->domain();
-	char safeVal = Cell::UNKNOWN;
-	int minimumChange = 1e6;
+
+	// list of potential value/effect value pairs
+	QList<QPair<char,int> > effectValues;
 
 	// loop over each possible value of target cell
 	for( auto i=originalDomain.constBegin(); i!=originalDomain.constEnd(); ++i )
@@ -343,18 +344,35 @@ char Grid::getSafestValue(Cell *target)
 			counter += diffDomain.size();
 		}
 
-		// assign minimum if current value beats it
-		if( counter < minimumChange ){
-			minimumChange = counter;
-			safeVal = *i;
+		// insert in place
+		bool inserted = false;
+		for( auto e=effectValues.begin(); e!=effectValues.end(); ++e ){
+			QPair p = *e;
+			if( p.second > counter ){
+				effectValues.insert(e, QPair(*i, counter));
+				inserted = true;
+				break;
+			}
 		}
+		if( !inserted )
+			effectValues.append( QPair(*i, counter) );
 
 		// reset grid to pre-check levels
 		unfixArcConsistency(diff);
 	}
+
+	// reset cell to pre-value check
 	target->setValue(Cell::UNKNOWN);
 	target->setDomain(originalDomain);
-	return safeVal;
+
+	// pop everything to a queue
+	QQueue<char> priorities;
+	for( auto i=effectValues.begin(); i!=effectValues.end(); ++i ){
+		QPair<char, int> p = *i;
+		priorities.enqueue( p.first );
+	}
+
+	return priorities;
 }
 
 QList<Cell*> Grid::solve(bool guess)

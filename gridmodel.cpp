@@ -147,7 +147,11 @@ Qt::ItemFlags GridModel::flags(const QModelIndex& index) const
 void GridModel::setShowDomainColor(bool value)
 {
 	showDomainColor = value;
+#if QT_VERSION > 0x050000
 	emit dataChanged( createIndex(0,0), createIndex(rowCount()-1, columnCount()-1), {Qt::BackgroundRole} );
+#else
+	emit dataChanged( createIndex(0,0), createIndex(rowCount()-1, columnCount()-1) );
+#endif
 }
 
 void GridModel::cellsChanged(QList<Cell *> diff)
@@ -162,6 +166,9 @@ void GridModel::cellsChanged(QList<Cell *> diff)
 		if( cell->rowIndex() < minCol ) minCol = cell->columnIndex();
 	}
 
-	emit dataChanged( createIndex(minRow, minCol),
-					  createIndex(maxRow, maxCol), {Qt::DisplayRole, Qt::BackgroundRole} );
+#if QT_VERSION > 0x050000
+	emit dataChanged( createIndex(minRow, minCol), createIndex(maxRow, maxCol), {Qt::DisplayRole, Qt::BackgroundRole} );
+#else
+	emit dataChanged( createIndex(minRow, minCol), createIndex(maxRow, maxCol) );
+#endif
 }
