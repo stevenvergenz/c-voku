@@ -55,7 +55,7 @@ void MainWindow::openFile()
 	ui->action_Solve->setEnabled(true);
 	connect( ui->actionSet_checkpoint, SIGNAL(triggered()), grid, SLOT(setCheckpoint()) );
 	ui->actionSet_checkpoint->setEnabled(true);
-	connect( ui->action_Restore_checkpoint, SIGNAL(triggered()), grid, SLOT(restoreCheckpoint()) );
+	connect( ui->action_Restore_checkpoint, SIGNAL(triggered()), this, SLOT(restoreCheckpoint()) );
 	ui->action_Restore_checkpoint->setEnabled(true);
 
 	ui->tableView->setModel(model);
@@ -80,6 +80,5 @@ void MainWindow::printLog(QString msg)
 
 void MainWindow::restoreCheckpoint(){
 	grid->restoreCheckpoint();
-	grid->fixArcConsistency();
 	model->cellsChanged();
 }

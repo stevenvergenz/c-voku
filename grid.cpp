@@ -80,7 +80,7 @@ Grid::Grid(int size) : QObject(), _size(size)
 		}
 	}
 
-	history.push( new HistFrame(nullptr, QQueue<char>()) );
+	history.push( new HistFrame() );
 }
 
 
@@ -215,25 +215,35 @@ QSet<char> Grid::fullDomain() const
 
 void Grid::updateHistory(QObject *cell){
 	Cell* c = (Cell*)cell;
-	history.top()->addValue(c, c->value());
+	history.top()->newValues.insert(c, c->value());
 	Logger::log("Adding value to history");
 }
 
 void Grid::setCheckpoint(){
 	Logger::log("Setting checkpoint");
-	history.push( new HistFrame(nullptr, QQueue<char>()) );
+	history.push( new HistFrame() );
 }
 
-void Grid::restoreCheckpoint(){
-	Logger::log("Undoing changes since last checkpoint");
+void Grid::restoreCheckpoint()
+{
 	HistFrame* hist;
 	if( history.size() > 1 )
 		hist = history.pop();
 	else
 		hist = history.top();
-	hist->revertChanges();
+
+	Logger::log( QString("Undoing the %1 changes since last checkpoint").arg(hist->newValues.size()) );
+
+	for( auto i=hist->newValues.begin(); i!=hist->newValues.end(); ++i ){
+		Cell* cell = i.key();
+		cell->setValue(Cell::UNKNOWN);
+		broadenDomains(cell);
+	}
+
 	if( !history.contains(hist) )
 		delete hist;
+
+
 }
 
 /*******************************************

@@ -154,7 +154,8 @@ void GridModel::cellsChanged(QList<Cell *> diff)
 {
 	// calculate change in table space
 	int minRow=_grid.size(), minCol=_grid.size(), maxRow=-1, maxCol=-1;
-	if( !diff.empty() ){
+	if( !diff.isEmpty() ){
+		Logger::log("Updating select cells");
 		for( auto i=diff.constBegin(); i!=diff.constEnd(); ++i ){
 			Cell* cell = *i;
 			if( cell->rowIndex() > maxRow ) maxRow = cell->rowIndex();
@@ -164,6 +165,7 @@ void GridModel::cellsChanged(QList<Cell *> diff)
 		}
 	}
 	else {
+		Logger::log("Updating all cells");
 		minRow = 0; maxRow = rowCount()-1;
 		minCol = 0; maxCol = columnCount()-1;
 	}
