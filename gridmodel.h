@@ -25,7 +25,7 @@ signals:
 	
 public slots:
 	void setShowDomainColor(bool value);
-	void cellsChanged(QList<Cell*> diff);
+	void cellsChanged(QList<Cell*> diff = QList<Cell*>());
 
 private:
 	Grid& _grid;

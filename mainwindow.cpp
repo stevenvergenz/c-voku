@@ -80,5 +80,6 @@ void MainWindow::printLog(QString msg)
 
 void MainWindow::restoreCheckpoint(){
 	grid->restoreCheckpoint();
+	grid->fixArcConsistency();
 	model->cellsChanged();
 }

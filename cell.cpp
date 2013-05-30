@@ -12,7 +12,10 @@ Cell::Cell(QList<Cell*>& row, int rowNum, QList<Cell*>& column, int columnNum, Q
 
 
 void Cell::setDomain(QSet<char> newDomain){
-	_domain = newDomain;
+	_domain.clear();
+	for( auto i=newDomain.begin(); i!=newDomain.end(); ++i ){
+		_domain.insert(*i);
+	}
 }
 
 const QSet<char> Cell::domain() const {
@@ -50,20 +53,21 @@ QList<Cell*> Cell::dependentCells() const
 bool Cell::setValue(char value, bool given)
 {
 	// only allow assignment if given value is valid
-	if( _domain.contains(value) )
-	{
-		this->_value = value;
-		_domain.clear();
-		this->given = given;
-		emit valueChanged();
-		return true;
-	}
-	else if( value == UNKNOWN && _value != UNKNOWN ){
+	if( value == UNKNOWN && this->_value != UNKNOWN ){
 		this->_value = value;
 		broadenDomain();
 		emit valueChanged();
 		return true;
 	}
+	else if( this->_domain.contains(value) )
+	{
+		this->_value = value;
+		this->_domain.clear();
+		this->given = given;
+		emit valueChanged();
+		return true;
+	}
+
 	else return false;
 }
 

@@ -117,7 +117,7 @@ bool GridModel::setData(const QModelIndex& index, const QVariant& value, int rol
 		{
 			Logger::log(QString("Setting value of (%1,%2) to %3").arg(
 				QString::number(subject->rowIndex()), QString::number(subject->columnIndex()),
-				_grid.alphabet().at(subject->value())
+				value.toString()
 			));
 			QHash<Cell*, QSet<char> > diff;
 			if( val == Cell::UNKNOWN )
@@ -147,23 +147,25 @@ Qt::ItemFlags GridModel::flags(const QModelIndex& index) const
 void GridModel::setShowDomainColor(bool value)
 {
 	showDomainColor = value;
-#if QT_VERSION > 0x050000
-	emit dataChanged( createIndex(0,0), createIndex(rowCount()-1, columnCount()-1), {Qt::BackgroundRole} );
-#else
-	emit dataChanged( createIndex(0,0), createIndex(rowCount()-1, columnCount()-1) );
-#endif
+	cellsChanged();
 }
 
 void GridModel::cellsChanged(QList<Cell *> diff)
 {
 	// calculate change in table space
 	int minRow=_grid.size(), minCol=_grid.size(), maxRow=-1, maxCol=-1;
-	for( auto i=diff.constBegin(); i!=diff.constEnd(); ++i ){
-		Cell* cell = *i;
-		if( cell->rowIndex() > maxRow ) maxRow = cell->rowIndex();
-		if( cell->rowIndex() < minRow ) minRow = cell->rowIndex();
-		if( cell->columnIndex() > maxCol ) maxCol = cell->columnIndex();
-		if( cell->rowIndex() < minCol ) minCol = cell->columnIndex();
+	if( !diff.empty() ){
+		for( auto i=diff.constBegin(); i!=diff.constEnd(); ++i ){
+			Cell* cell = *i;
+			if( cell->rowIndex() > maxRow ) maxRow = cell->rowIndex();
+			if( cell->rowIndex() < minRow ) minRow = cell->rowIndex();
+			if( cell->columnIndex() > maxCol ) maxCol = cell->columnIndex();
+			if( cell->rowIndex() < minCol ) minCol = cell->columnIndex();
+		}
+	}
+	else {
+		minRow = 0; maxRow = rowCount()-1;
+		minCol = 0; maxCol = columnCount()-1;
 	}
 
 #if QT_VERSION > 0x050000
