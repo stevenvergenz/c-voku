@@ -65,6 +65,17 @@ bool Cell::setValue(char value, bool given)
 	else return false;
 }
 
+QSet<char> Cell::setValueAndGetDomainChanges(char value)
+{
+	QSet<char> oldDomain = _domain;
+	if( setValue(value) ){
+		return oldDomain;
+	}
+	else {
+		return QSet<char>();
+	}
+}
+
 char Cell::value() const {
 	return this->_value;
 }

@@ -113,7 +113,7 @@ bool GridModel::setData(const QModelIndex& index, const QVariant& value, int rol
 			val = _grid.alphabet().indexOf( value.toString() );
 		}
 
-		if( subject->setValue(val) )
+		if( val != Cell::UNKNOWN && subject->setValue(val) )
 		{
 			Logger::log(QString("Setting value of (%1,%2) to %3").arg(
 				QString::number(subject->rowIndex()), QString::number(subject->columnIndex()),

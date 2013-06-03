@@ -24,6 +24,7 @@ public:
 	QList<Cell*> dependentCells() const;
 
 	bool setValue(char value, bool given = false);
+	QSet<char> setValueAndGetDomainChanges(char value);
 	char value() const;
 	bool isGiven() const;
 	int rowIndex() const;
