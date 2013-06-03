@@ -325,11 +325,10 @@ Cell* Grid::getSafestCell() const
 }
 
 // expects an unset cell with at least one option in its domain
-char Grid::getSafestValue(Cell *target)
+QQueue<char> Grid::getSafestValues(Cell *target)
 {
+	QList<QPair<char, int> > options;
 	QSet<char> originalDomain = target->domain();
-	char safeVal = Cell::UNKNOWN;
-	int minimumChange = 1e6;
 
 	// loop over each possible value of target cell
 	for( auto i=originalDomain.constBegin(); i!=originalDomain.constEnd(); ++i )
@@ -343,10 +342,15 @@ char Grid::getSafestValue(Cell *target)
 			counter += diffDomain.size();
 		}
 
-		// assign minimum if current value beats it
-		if( counter < minimumChange ){
-			minimumChange = counter;
-			safeVal = *i;
+		// insert into the sorted options list
+		for( auto j=options.begin(); j!=options.end(); ++j ){
+			QPair<char,int> pair = *j;
+			if( counter < pair.second ){
+				options.insert(j, QPair<char,int>(*i,counter));
+			}
+		}
+		if( !options.contains( QPair<char,int>(*i,counter) ) ){
+			options.append( QPair<char,int>(*i,counter) );
 		}
 
 		// reset grid to pre-check levels
@@ -354,7 +358,13 @@ char Grid::getSafestValue(Cell *target)
 	}
 	target->setValue(Cell::UNKNOWN);
 	target->setDomain(originalDomain);
-	return safeVal;
+
+	QQueue<char> retQueue;
+	for( auto i=options.constBegin(); i!=options.constEnd(); ++i ){
+		QPair<char,int> pair = *i;
+		retQueue.enqueue( pair.first );
+	}
+	return retQueue;
 }
 
 QList<Cell*> Grid::solve(bool guess)
@@ -394,7 +404,8 @@ QList<Cell*> Grid::solve(bool guess)
 		// the safest cell has multiple options, guess and continue
 		else if( guess ){
 			// do make a guess and continue
-			char bestValue = getSafestValue(target);
+			auto options = getSafestValues(target);
+			char bestValue = options.dequeue();
 			Logger::log( QString("Safest value for (%1,%2) is %3")
 				.arg(QString::number(target->rowIndex()), QString::number(target->columnIndex()),
 					alphabet().at(bestValue)
