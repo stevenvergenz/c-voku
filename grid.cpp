@@ -425,3 +425,55 @@ QList<Cell*> Grid::solve(bool guess)
 
 	return diffList.values();
 }
+
+HistoryFrame* Grid::undo(Cell *rewindTarget)
+{
+	HistoryFrame* frame = nullptr;
+
+	// only pop off the most recent change
+	if( rewindTarget == nullptr )
+	{
+		// break if no history
+		if( history.size() == 0 )
+			return nullptr;
+
+		// pop top frame off the stack and restore state
+		frame = history.pop();
+		frame->target->setValue( Cell::UNKNOWN );
+		frame->target->setDomain( frame->domainChanges.value( frame->target ));
+
+		// restore the domains of all other affected cells
+		for( auto pair=frame->domainChanges.begin(); pair!=frame->domainChanges.end(); ++pair ){
+			Cell* target = pair.key();
+			target->appendToDomain( pair.value() );
+		}
+	}
+
+	else
+	{
+		// see if the specified frame is in the history
+		bool cellFound = false;
+		for( auto i=history.begin(); i!=history.end(); ++i ){
+			HistoryFrame* temp = *i;
+			if( temp->target == rewindTarget ){
+				cellFound = true;
+				break;
+			}
+		}
+		if( !cellFound )
+			return nullptr;
+
+		HistoryFrame* tempFrame = nullptr;
+		while( (tempFrame = undo()) != nullptr ){
+			if( tempFrame->target == rewindTarget ){
+				frame = tempFrame;
+				break;
+			}
+			else {
+				delete tempFrame;
+			}
+		}
+	}
+
+	return frame;
+}

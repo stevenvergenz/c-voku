@@ -7,11 +7,14 @@
 #include <QSet>
 #include <QHash>
 #include <QQueue>
+#include <QStack>
 #include <stdexcept>
 
 #include "cell.h"
 #include "exception.h"
 #include "logger.h"
+#include "historyframe.h"
+
 
 class Grid
 {
@@ -36,6 +39,8 @@ public:
 
 	QList<Cell *> solve(bool guess = false);
 
+	HistoryFrame* undo(Cell *rewindTarget = nullptr);
+
 private:
 
 	int _size;
@@ -44,7 +49,7 @@ private:
 	QList<QList<Cell*> > columns;
 	QList<QList<Cell*> > blocks;
 
-
+	QStack<HistoryFrame*> history;
 };
 
 #endif // GRID_H
