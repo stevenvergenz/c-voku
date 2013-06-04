@@ -22,7 +22,8 @@ SOURCES += main.cpp\
     exception.cpp \
     metatableitemdelegate.cpp \
     logger.cpp \
-    historyframe.cpp
+    historyframe.cpp \
+    grid_csp.cpp
 
 HEADERS  += mainwindow.h \
     cell.h \
