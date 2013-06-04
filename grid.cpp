@@ -387,7 +387,7 @@ QList<Cell*> Grid::solve(bool guess)
 		else if( target->domain().size() == 1 )
 		{
 			// set cell right away, no need to optimize
-			target->setValue( target->domain().values()[0] );
+			auto oldDomain = target->setValueAndGetDomainChanges( target->domain().values()[0] );
 			Logger::log(QString("Setting value of (%1,%2) to %3").arg(
 				QString::number(target->rowIndex()), QString::number(target->columnIndex()),
 				alphabet().at(target->value())
@@ -476,4 +476,27 @@ HistoryFrame* Grid::undo(Cell *rewindTarget)
 	}
 
 	return frame;
+}
+
+bool Grid::setCellAndUpdate(Cell *cell, char newValue, QQueue<char> otherOptions)
+{
+	// if newValue is a valid choice for cell
+	QSet<char> oldDomain = cell->setValueAndGetDomainChanges(newValue);
+	if( oldDomain.size() > 0 )
+	{
+		// populate a history frame
+		HistoryFrame* frame = new HistoryFrame( cell, otherOptions );
+		frame->domainChanges[cell].unite(oldDomain);
+
+		// store domain changes too
+		auto changes = fixArcConsistency(cell);
+		for( auto i=changes.begin(); i!=changes.end(); ++i ){
+			frame->domainChanges[i.key()].unite(i.value());
+		}
+
+		// push frame to stack and return
+		history.push(frame);
+		return true;
+	}
+	else return false;
 }

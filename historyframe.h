@@ -11,7 +11,12 @@
 class HistoryFrame
 {
 public:
-	HistoryFrame(Cell* targetCell, QHash<Cell*, QSet<char> > changes, QQueue<char> options);
+	HistoryFrame(
+		Cell* targetCell = nullptr,
+		QQueue<char> options = QQueue<char>(),
+		QHash<Cell*, QSet<char> > changes = QHash<Cell*,QSet<char> >()
+	);
+
 	Cell* target;
 	QHash<Cell*, QSet<char> > domainChanges;
 	QQueue<char> optionPriorities;

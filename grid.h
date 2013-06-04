@@ -40,6 +40,7 @@ public:
 	QList<Cell *> solve(bool guess = false);
 
 	HistoryFrame* undo(Cell *rewindTarget = nullptr);
+	bool setCellAndUpdate(Cell* cell, char newValue, QQueue<char> otherOptions = QQueue<char>());
 
 private:
 
