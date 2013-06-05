@@ -21,7 +21,8 @@ SOURCES += main.cpp\
     puzzleview.cpp \
     exception.cpp \
     metatableitemdelegate.cpp \
-    logger.cpp
+    logger.cpp \
+    centerfloatlayout.cpp
 
 HEADERS  += mainwindow.h \
     cell.h \
@@ -30,6 +31,7 @@ HEADERS  += mainwindow.h \
     puzzleview.h \
     exception.h \
     metatableitemdelegate.h \
-    logger.h
+    logger.h \
+    centerfloatlayout.h
 
 FORMS    += mainwindow.ui
