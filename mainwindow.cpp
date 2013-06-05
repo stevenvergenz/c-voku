@@ -55,6 +55,7 @@ void MainWindow::openFile()
 	ui->action_Solve->setEnabled(true);
 
 	ui->tableView->setModel(model);
+	ui->tableView->updateContents();
 	printLog(filename+" loaded");
 }
 
