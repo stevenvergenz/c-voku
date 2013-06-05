@@ -5,8 +5,10 @@
 #include <QDebug>
 #include <QSizePolicy>
 #include <QHeaderView>
+#include <QResizeEvent>
 
 #include "metatableitemdelegate.h"
+#include "logger.h"
 
 class PuzzleView : public QTableView
 {
@@ -19,10 +21,12 @@ public:
 signals:
 	
 public slots:
+	void updateContents();
 
 protected:
 	int sizeHintForRow(int row) const;
 	int sizeHintForColumn(int column) const;
+	void resizeEvent(QResizeEvent *event);
 };
 
 #endif // PUZZLEVIEW_H

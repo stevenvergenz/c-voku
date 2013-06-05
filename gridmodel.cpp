@@ -4,14 +4,14 @@ GridModel::GridModel(Grid& grid, QObject *parent) : QAbstractTableModel(parent),
 {
 	showDomainColor = false;
 	givenFont.setWeight( QFont::Bold );
-	if( _grid.size() > 9 ){
+	/*if( _grid.size() > 9 ){
 		givenFont.setPointSize(12);
 		normalFont.setPointSize(12);
 	}
 	else {
 		givenFont.setPointSize(14);
 		normalFont.setPointSize(14);
-	}
+	}*/
 }
 
 int GridModel::rowCount(const QModelIndex& parent) const
@@ -80,7 +80,7 @@ QVariant GridModel::data(const QModelIndex& index, int role) const
 				return QVariant(givenFont);
 			}
 			else {
-				return QVariant(normalFont);
+				return QVariant();
 			}
 			break;
 		}

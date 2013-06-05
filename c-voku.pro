@@ -23,7 +23,8 @@ SOURCES += main.cpp\
     metatableitemdelegate.cpp \
     logger.cpp \
     historyframe.cpp \
-    grid_csp.cpp
+    grid_csp.cpp \
+    centerfloatlayout.cpp
 
 HEADERS  += mainwindow.h \
     cell.h \
@@ -33,6 +34,7 @@ HEADERS  += mainwindow.h \
     exception.h \
     metatableitemdelegate.h \
     logger.h \
-    historyframe.h
+    historyframe.h \
+    centerfloatlayout.h
 
 FORMS    += mainwindow.ui
