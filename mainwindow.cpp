@@ -5,6 +5,10 @@ MainWindow::MainWindow(QWidget *parent)
 : QMainWindow(parent), ui(new Ui::MainWindow), grid(nullptr), model(nullptr)
 {
 	ui->setupUi(this);
+	CenterFloatLayout* layout = new CenterFloatLayout(ui->frame);
+	layout->setContentsMargins(8,8,8,8);
+	layout->addWidget(ui->tableView);
+	//ui->frame->setLayout(layout);
 
 	// connect the open menu item
 	connect( ui->actionOpen, SIGNAL(triggered()), this, SLOT(openFile()) );

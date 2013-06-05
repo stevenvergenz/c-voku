@@ -12,6 +12,7 @@ public:
 	~CenterFloatLayout();
 
 	void addItem(QLayoutItem* item);
+	int count() const;
 	QSize sizeHint() const;
 	QSize minimumSize() const;
 	QLayoutItem* itemAt(int index) const;

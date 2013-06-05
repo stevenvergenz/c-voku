@@ -9,6 +9,7 @@
 #include "logger.h"
 #include "grid.h"
 #include "gridmodel.h"
+#include "centerfloatlayout.h"
 
 namespace Ui {
 class MainWindow;

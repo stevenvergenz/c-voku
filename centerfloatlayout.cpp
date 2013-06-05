@@ -5,16 +5,21 @@ CenterFloatLayout::CenterFloatLayout(QWidget *parent)
 {
 }
 
-void CenterFloatLayout::~CenterFloatLayout()
+CenterFloatLayout::~CenterFloatLayout()
 {
 	QLayoutItem* item;
-	while( item = takeAt(0) )
+	while( (item = takeAt(0)) )
 		delete item;
 }
 
 void CenterFloatLayout::addItem(QLayoutItem* item)
 {
 	items.append(item);
+}
+
+int CenterFloatLayout::count() const
+{
+	return items.count();
 }
 
 QSize CenterFloatLayout::sizeHint() const
@@ -39,7 +44,7 @@ QSize CenterFloatLayout::minimumSize() const
 
 QLayoutItem* CenterFloatLayout::itemAt(int index) const
 {
-	return items.at(index);
+	return (index > 0 && index < items.size()) ? items.at(index) : nullptr;
 }
 
 QLayoutItem* CenterFloatLayout::takeAt(int index)
@@ -50,12 +55,13 @@ QLayoutItem* CenterFloatLayout::takeAt(int index)
 void CenterFloatLayout::setGeometry(const QRect& rect)
 {
 	QLayout::setGeometry(rect);
-	int size = qMin(rect.width(), rect.height());
-	QSize corner((rect.width()-size)/2, (rect.height()-size)/2, size, size);
+	int size = qMin(rect.width() - contentsMargins().left() - contentsMargins().right(),
+					rect.height() - contentsMargins().top() - contentsMargins().bottom());
+	QSize corner((rect.width()-size)/2, (rect.height()-size)/2);
 
 	for( auto i=items.begin(); i!=items.end(); ++i )
 	{
 		QLayoutItem* item = *i;
-		item->setGeometry(corner);
+		item->setGeometry( QRect(rect.x()+corner.width(), rect.y()+corner.height(), size, size) );
 	}
 }
