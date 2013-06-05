@@ -41,9 +41,18 @@ void PuzzleView::updateContents()
 	// calculate size
 	double horizontalSize = (double)geometry().width()/horizontalHeader()->count();
 	double verticalSize = (double)geometry().height()/verticalHeader()->count();
+
+	// check if current font size is too big/small for cells
+	QFont f(font().family(), 16);
+	while( QFontMetrics(f).height() > verticalSize && f.pointSize() > 6 ){
+		f.setPointSize( f.pointSize()-1 );
+	}
+	if( font().pointSize() != f.pointSize() )
+		setFont(f);
+
 	double horizRollingSize = 0.0f, vertRollingSize = 0.0f;
 
-	// apply size to all cells
+	// apply size to all cells, accounting for roundoff
 	for( int i=0; i<horizontalHeader()->count(); i++ )
 	{
 		horizRollingSize += horizontalSize;
@@ -55,7 +64,7 @@ void PuzzleView::updateContents()
 		horizRollingSize -= (int)horizRollingSize;
 		vertRollingSize -= (int)vertRollingSize;
 	}
-	Logger::log("Grid resized");
+	//Logger::log("Grid resized");
 }
 
 void PuzzleView::resizeEvent(QResizeEvent *event)
