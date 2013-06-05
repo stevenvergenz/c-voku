@@ -170,6 +170,7 @@
     <addaction name="action_Color_domains"/>
     <addaction name="action_Fill_in_single_domains"/>
     <addaction name="action_Solve"/>
+    <addaction name="action_Undo"/>
    </widget>
    <widget class="QMenu" name="menu_Help">
     <property name="title">
@@ -231,6 +232,14 @@
    </property>
    <property name="text">
     <string>&amp;Solve</string>
+   </property>
+  </action>
+  <action name="action_Undo">
+   <property name="text">
+    <string>&amp;Undo</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Z</string>
    </property>
   </action>
  </widget>

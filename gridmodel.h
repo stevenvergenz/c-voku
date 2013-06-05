@@ -7,6 +7,7 @@
 #include <QColor>
 
 #include "grid.h"
+#include "historyframe.h"
 
 class GridModel : public QAbstractTableModel
 {
@@ -26,6 +27,9 @@ signals:
 public slots:
 	void setShowDomainColor(bool value);
 	void cellsChanged(QList<Cell*> diff);
+	void fillSingleDomains();
+	void solve();
+	void undo();
 
 private:
 	Grid& _grid;

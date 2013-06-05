@@ -9,6 +9,7 @@ MainWindow::MainWindow(QWidget *parent)
 	// connect the open menu item
 	connect( ui->actionOpen, SIGNAL(triggered()), this, SLOT(openFile()) );
 	connect( Logger::instance(), SIGNAL(onMessage(QString)), this, SLOT(printLog(QString)) );
+
 }
 
 MainWindow::~MainWindow()
@@ -46,26 +47,20 @@ void MainWindow::openFile()
 	grid = newGrid;
 	model = newGridModel;
 
-	connect( ui->action_Color_domains, SIGNAL(toggled(bool)), model, SLOT(setShowDomainColor(bool)) );
 	model->setShowDomainColor(ui->action_Color_domains->isChecked());
 	ui->action_Color_domains->setEnabled(true);
-	connect( ui->action_Fill_in_single_domains, SIGNAL(triggered()), this, SLOT(fillSingleDomains()) );
 	ui->action_Fill_in_single_domains->setEnabled(true);
-	connect( ui->action_Solve, SIGNAL(triggered()), this, SLOT(solve()) );
 	ui->action_Solve->setEnabled(true);
+	ui->action_Undo->setEnabled(true);
+	connect( ui->action_Color_domains, SIGNAL(toggled(bool)), model, SLOT(setShowDomainColor(bool)) );
+	connect( ui->action_Fill_in_single_domains, SIGNAL(triggered()), model, SLOT(fillSingleDomains()) );
+	connect( ui->action_Solve, SIGNAL(triggered()), model, SLOT(solve()) );
+	connect( ui->action_Undo, SIGNAL(triggered()), model, SLOT(undo()) );
 
 	ui->tableView->setModel(model);
 	printLog(filename+" loaded");
 }
 
-void MainWindow::fillSingleDomains()
-{
-	model->cellsChanged(grid->solve(false));
-}
-
-void MainWindow::solve(){
-	model->cellsChanged(grid->solve(true));
-}
 
 void MainWindow::printLog(QString msg)
 {

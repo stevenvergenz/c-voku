@@ -24,8 +24,6 @@ public:
 
 public slots:
 	void openFile();
-	void fillSingleDomains();
-	void solve();
 	void printLog(QString msg);
 	
 private:

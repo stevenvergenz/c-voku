@@ -113,20 +113,15 @@ bool GridModel::setData(const QModelIndex& index, const QVariant& value, int rol
 			val = _grid.alphabet().indexOf( value.toString() );
 		}
 
-		if( val != Cell::UNKNOWN && subject->setValue(val) )
+		if( val != Cell::UNKNOWN && _grid.setCellAndUpdate(subject, val) )
 		{
 			Logger::log(QString("Setting value of (%1,%2) to %3").arg(
 				QString::number(subject->rowIndex()), QString::number(subject->columnIndex()),
 				_grid.alphabet().at(subject->value())
 			));
-			QHash<Cell*, QSet<char> > diff;
-			if( val == Cell::UNKNOWN )
-				diff = _grid.broadenDomains(subject);
-			else
-				diff = _grid.fixArcConsistency(subject);
 
 			// calculate change in table space
-			cellsChanged(diff.keys());
+			cellsChanged(_grid.unwindHistorySince().toList());
 			return true;
 		}
 		else return false;
@@ -173,4 +168,25 @@ void GridModel::cellsChanged(QList<Cell *> diff)
 #else
 	emit dataChanged( createIndex(minRow, minCol), createIndex(maxRow, maxCol) );
 #endif
+}
+
+void GridModel::fillSingleDomains()
+{
+	cellsChanged(_grid.solve(false));
+}
+
+void GridModel::solve(){
+	cellsChanged(_grid.solve(true));
+}
+
+void GridModel::undo(){
+	HistoryFrame* frame = _grid.undo();
+	if( frame == nullptr ) return;
+
+	QList<Cell*> diff;
+	for( auto i=frame->domainChanges.begin(); i!=frame->domainChanges.end(); ++i ){
+		diff << i.key();
+	}
+	cellsChanged(diff);
+	Logger::log("Reverting last change");
 }

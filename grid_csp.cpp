@@ -180,18 +180,12 @@ QList<Cell*> Grid::solve(bool guess)
 		else if( target->domain().size() == 1 )
 		{
 			// set cell right away, no need to optimize
-			auto oldDomain = target->setValueAndGetDomainChanges( target->domain().values()[0] );
+			setCellAndUpdate(target, target->domain().values()[0]);
 			Logger::log(QString("Setting value of (%1,%2) to %3").arg(
 				QString::number(target->rowIndex()), QString::number(target->columnIndex()),
 				alphabet().at(target->value())
 			));
-			auto diff = fixArcConsistency(target);
 
-			// add changes
-			diffList.insert(target);
-			for( auto i=diff.constBegin(); i!=diff.constEnd(); ++i ){
-				diffList.insert(i.key());
-			}
 		}
 
 		// the safest cell has multiple options, guess and continue
@@ -292,4 +286,34 @@ bool Grid::setCellAndUpdate(Cell *cell, char newValue, QQueue<char> otherOptions
 		return true;
 	}
 	else return false;
+}
+
+QSet<Cell*> Grid::unwindHistorySince(HistoryFrame* frame)
+{
+	QSet<Cell*> retSet;
+	if( frame != nullptr )
+	{
+		bool startCounting = false;
+		for( auto i=history.begin(); i!=history.end(); ++i )
+		{
+			// add cells
+			HistoryFrame* f = *i;
+			if( startCounting ){
+				for( auto j=f->domainChanges.begin(); j!=f->domainChanges.end(); ++j ){
+					retSet << j.key();
+				}
+			}
+
+			if( f == frame )
+				startCounting = true;
+		}
+	}
+	else
+	{
+		for( auto i=history.top()->domainChanges.begin(); i!=history.top()->domainChanges.end(); ++i ){
+			retSet << i.key();
+		}
+	}
+
+	return retSet;
 }
