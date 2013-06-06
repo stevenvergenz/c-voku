@@ -2,9 +2,6 @@
 
 PuzzleView::PuzzleView(QWidget *parent) : QTableView(parent)
 {
-	QSizePolicy* policy = new QSizePolicy();
-	policy->setHeightForWidth(true);
-	setSizePolicy(*policy);
 	setFocusPolicy(Qt::NoFocus);
 
 	this->setItemDelegate(new MetatableItemDelegate());
@@ -18,10 +15,6 @@ PuzzleView::PuzzleView(QWidget *parent) : QTableView(parent)
 #endif
 	horizontalHeader()->setMinimumSectionSize(5);
 	verticalHeader()->setMinimumSectionSize(5);
-}
-
-int PuzzleView::heightForWidth(int w) const {
-	return w;
 }
 
 QSize PuzzleView::sizeHint() const {

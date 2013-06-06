@@ -15,7 +15,6 @@ class PuzzleView : public QTableView
 	Q_OBJECT
 public:
 	explicit PuzzleView(QWidget *parent = 0);
-	int heightForWidth(int w) const;
 	QSize sizeHint() const;
 
 signals:
