@@ -158,22 +158,53 @@ QQueue<char> Grid::getSafestValues(Cell *target)
 		retQueue.enqueue( pair.first );
 	}
 	return retQueue;
+
+	// dummy list returns unordered options
+	/*QQueue<char> retQueue;
+	for( auto i=target->domain().begin(); i!=target->domain().end(); ++i ){
+		retQueue << *i;
+	}
+	return retQueue;*/
 }
 
 QList<Cell*> Grid::solve(bool guess)
 {
 	// get the safest cell
-	QSet<Cell*> diffList;
+	HistoryFrame* startFrame = nullptr;
+	if( !history.isEmpty() )
+		history.top();
 	Cell* target = getSafestCell();
 
 	while( target != nullptr )
 	{
 		// the safest cell has no valid numbers, we made a mistake somewhere
-		if( target->domain().size() == 0 ){
-			Logger::log(QString("Cell at (%1,%2) has no solution!").arg(
+		if( target->domain().size() == 0 )
+		{
+			// backtrack until some options present themselves
+			HistoryFrame* lastOption = undo();
+			while( lastOption!=nullptr && lastOption->optionPriorities.size() == 0 ){
+				delete lastOption;
+				lastOption = undo();
+			}
+
+			// if there are no frames with options, error and break
+			if( lastOption == nullptr ){
+				Logger::log("No solutions!");
+				break;
+			}
+
+			// backtrack and continue
+			setCellAndUpdate(lastOption);
+
+			Logger::log(QString("Cell at (%1,%2) has no solution, backtracking").arg(
 				QString::number(target->rowIndex()), QString::number(target->columnIndex())
 			));
-			break;
+
+			Logger::log( QString("Guessing %1 at cell (%2,%3)")
+				.arg(alphabet().at(lastOption->target->value()),
+				QString::number(lastOption->target->rowIndex()),
+				QString::number(lastOption->target->columnIndex()))
+			);
 		}
 
 		// the safest cell has just one possibility, choose it
@@ -181,11 +212,6 @@ QList<Cell*> Grid::solve(bool guess)
 		{
 			// set cell right away, no need to optimize
 			setCellAndUpdate(target, target->domain().values()[0]);
-			Logger::log(QString("Setting value of (%1,%2) to %3").arg(
-				QString::number(target->rowIndex()), QString::number(target->columnIndex()),
-				alphabet().at(target->value())
-			));
-
 		}
 
 		// the safest cell has multiple options, guess and continue
@@ -193,12 +219,12 @@ QList<Cell*> Grid::solve(bool guess)
 			// do make a guess and continue
 			auto options = getSafestValues(target);
 			char bestValue = options.dequeue();
-			Logger::log( QString("Safest value for (%1,%2) is %3")
-				.arg(QString::number(target->rowIndex()), QString::number(target->columnIndex()),
-					alphabet().at(bestValue)
-				)
+			setCellAndUpdate(target, bestValue, options);
+			Logger::log( QString("Guessing %1 at cell (%2,%3)")
+				.arg(alphabet().at(bestValue),
+				QString::number(target->rowIndex()),
+				QString::number(target->columnIndex()))
 			);
-			break;
 		}
 
 		// multiple options, and guessing not allowed, break
@@ -210,7 +236,12 @@ QList<Cell*> Grid::solve(bool guess)
 		target = getSafestCell();
 	}
 
-	return diffList.values();
+	if( startFrame != nullptr ){
+		return unwindHistorySince(startFrame).toList();
+	}
+	else {
+		return unwindHistorySince(history.at(0)).toList();
+	}
 }
 
 HistoryFrame* Grid::undo(Cell *rewindTarget)
@@ -230,10 +261,7 @@ HistoryFrame* Grid::undo(Cell *rewindTarget)
 		frame->target->setDomain( frame->domainChanges.value( frame->target ));
 
 		// restore the domains of all other affected cells
-		for( auto pair=frame->domainChanges.begin(); pair!=frame->domainChanges.end(); ++pair ){
-			Cell* target = pair.key();
-			target->appendToDomain( pair.value() );
-		}
+		unfixArcConsistency( frame->domainChanges );
 	}
 
 	else
@@ -277,6 +305,29 @@ bool Grid::setCellAndUpdate(Cell *cell, char newValue, QQueue<char> otherOptions
 
 		// store domain changes too
 		auto changes = fixArcConsistency(cell);
+		for( auto i=changes.begin(); i!=changes.end(); ++i ){
+			frame->domainChanges[i.key()].unite(i.value());
+		}
+
+		// push frame to stack and return
+		history.push(frame);
+		return true;
+	}
+	else return false;
+}
+
+bool Grid::setCellAndUpdate(HistoryFrame *frame)
+{
+	if( frame != nullptr && frame->optionPriorities.size() > 0 )
+	{
+		frame->domainChanges.clear();
+
+		// pick next option for target cell
+		QSet<char> oldDomain = frame->target->setValueAndGetDomainChanges( frame->optionPriorities.dequeue() );
+		frame->domainChanges[frame->target].unite(oldDomain);
+
+		// save domain changes
+		auto changes = fixArcConsistency(frame->target);
 		for( auto i=changes.begin(); i!=changes.end(); ++i ){
 			frame->domainChanges[i.key()].unite(i.value());
 		}

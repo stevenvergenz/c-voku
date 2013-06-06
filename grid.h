@@ -41,6 +41,7 @@ public:
 
 	HistoryFrame* undo(Cell *rewindTarget = nullptr);
 	bool setCellAndUpdate(Cell* cell, char newValue, QQueue<char> otherOptions = QQueue<char>());
+	bool setCellAndUpdate(HistoryFrame* frame);
 	QSet<Cell*> unwindHistorySince(HistoryFrame* frame = nullptr);
 
 private:
