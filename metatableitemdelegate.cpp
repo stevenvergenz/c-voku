@@ -21,45 +21,30 @@ void MetatableItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem 
 	int gridSize = index.model()->columnCount();
 	int blockSize = (int)sqrt((double)gridSize);
 
-	// paint top gridline
-	if( index.row() % blockSize == 0 && index.row() != 0 ){
-		painter->setPen(heavyPen);
-		painter->drawLine(option.rect.topLeft(), option.rect.topRight());
-	}
-	else {
+	bool horizDivider = index.row() % blockSize == 0 && index.row() != 0;
+	bool vertDivider = index.column() % blockSize == 0 && index.column() != 0;
+
+	// paint light lines
+	if( !horizDivider ){
 		painter->setPen(lightPen);
 		painter->drawLine(option.rect.topLeft(), option.rect.topRight());
 	}
-
-	/*// paint bottom gridline
-	if( index.row() % blockSize == blockSize-1 && index.row() != gridSize-1 ){
-		painter->setPen(heavyPen);
-		painter->drawLine(option.rect.bottomLeft(), option.rect.bottomRight());
-	}
-	else {
-		painter->setPen(lightPen);
-		painter->drawLine(option.rect.bottomLeft(), option.rect.bottomRight());
-	}*/
-
-	// paint left gridline
-	if( index.column() % blockSize == 0 && index.column() != 0 ){
-		painter->setPen(heavyPen);
-		painter->drawLine(option.rect.topLeft(), option.rect.bottomLeft());
-	}
-	else {
+	if( !vertDivider ){
 		painter->setPen(lightPen);
 		painter->drawLine(option.rect.topLeft(), option.rect.bottomLeft());
 	}
 
-	/*// paint right gridline
-	if( index.column() % blockSize == blockSize-1 && index.column() != gridSize-1 ){
+	// paint heavy lines
+	if( horizDivider ){
 		painter->setPen(heavyPen);
-		painter->drawLine(option.rect.topRight(), option.rect.bottomRight());
+		painter->drawLine(option.rect.topLeft(), option.rect.topRight());
 	}
-	else {
-		painter->setPen(lightPen);
-		painter->drawLine(option.rect.topRight(), option.rect.bottomRight());
-	}*/
+	if( vertDivider ){
+		painter->setPen(heavyPen);
+		painter->drawLine(option.rect.topLeft(), option.rect.bottomLeft());
+	}
+
+
 
 	painter->restore();
 
