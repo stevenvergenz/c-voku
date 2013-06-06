@@ -39,10 +39,12 @@ public:
 
 	QList<Cell *> solve(bool guess = false);
 
-	HistoryFrame* undo(Cell *rewindTarget = nullptr);
+	HistoryFrame* undo(HistoryFrame* frame = nullptr);
+	HistoryFrame* undo(Cell* cell);
 	bool setCellAndUpdate(Cell* cell, char newValue, QQueue<char> otherOptions = QQueue<char>());
 	bool setCellAndUpdate(HistoryFrame* frame);
 	QSet<Cell*> unwindHistorySince(HistoryFrame* frame = nullptr);
+	QSet<Cell*> unwindHistorySince(Cell* cell);
 
 private:
 

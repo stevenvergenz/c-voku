@@ -244,12 +244,10 @@ QList<Cell*> Grid::solve(bool guess)
 	}
 }
 
-HistoryFrame* Grid::undo(Cell *rewindTarget)
+HistoryFrame* Grid::undo(HistoryFrame *frame)
 {
-	HistoryFrame* frame = nullptr;
-
 	// only pop off the most recent change
-	if( rewindTarget == nullptr )
+	if( frame == nullptr )
 	{
 		// break if no history
 		if( history.size() == 0 )
@@ -266,22 +264,9 @@ HistoryFrame* Grid::undo(Cell *rewindTarget)
 
 	else
 	{
-		// see if the specified frame is in the history
-		bool cellFound = false;
-		for( auto i=history.begin(); i!=history.end(); ++i ){
-			HistoryFrame* temp = *i;
-			if( temp->target == rewindTarget ){
-				cellFound = true;
-				break;
-			}
-		}
-		if( !cellFound )
-			return nullptr;
-
 		HistoryFrame* tempFrame = nullptr;
 		while( (tempFrame = undo()) != nullptr ){
-			if( tempFrame->target == rewindTarget ){
-				frame = tempFrame;
+			if( tempFrame == frame ){
 				break;
 			}
 			else {
@@ -291,6 +276,23 @@ HistoryFrame* Grid::undo(Cell *rewindTarget)
 	}
 
 	return frame;
+}
+
+HistoryFrame* Grid::undo(Cell *cell)
+{
+	// see if the specified frame is in the history
+	HistoryFrame* frame = nullptr;
+	for( auto i=history.begin(); i!=history.end(); ++i ){
+		HistoryFrame* temp = *i;
+		if( temp->target == cell ){
+			frame = temp;
+			break;
+		}
+	}
+	if( frame == nullptr )
+		return nullptr;
+	else
+		return undo(frame);
 }
 
 bool Grid::setCellAndUpdate(Cell *cell, char newValue, QQueue<char> otherOptions)
@@ -367,4 +369,14 @@ QSet<Cell*> Grid::unwindHistorySince(HistoryFrame* frame)
 	}
 
 	return retSet;
+}
+
+QSet<Cell*> Grid::unwindHistorySince(Cell *cell)
+{
+	for( auto i=history.begin(); i!=history.end(); ++i ){
+		HistoryFrame* frame = *i;
+		if( frame->target == cell ){
+			return unwindHistorySince(frame);
+		}
+	}
 }
