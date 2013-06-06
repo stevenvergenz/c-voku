@@ -109,13 +109,26 @@
      <x>0</x>
      <y>0</y>
      <width>609</width>
-     <height>25</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
     <property name="title">
      <string>&amp;File</string>
     </property>
+    <widget class="QMenu" name="menuNew">
+     <property name="title">
+      <string>New</string>
+     </property>
+     <addaction name="action4x4"/>
+     <addaction name="action9x9"/>
+     <addaction name="action16x16"/>
+     <addaction name="action25x25"/>
+     <addaction name="action36x36"/>
+     <addaction name="action49x49"/>
+     <addaction name="action64x64"/>
+    </widget>
+    <addaction name="menuNew"/>
     <addaction name="actionOpen"/>
     <addaction name="separator"/>
     <addaction name="actionE_xit"/>
@@ -197,6 +210,41 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Z</string>
+   </property>
+  </action>
+  <action name="action4x4">
+   <property name="text">
+    <string>4x4</string>
+   </property>
+  </action>
+  <action name="action9x9">
+   <property name="text">
+    <string>9x9</string>
+   </property>
+  </action>
+  <action name="action16x16">
+   <property name="text">
+    <string>16x16</string>
+   </property>
+  </action>
+  <action name="action25x25">
+   <property name="text">
+    <string>25x25</string>
+   </property>
+  </action>
+  <action name="action36x36">
+   <property name="text">
+    <string>36x36</string>
+   </property>
+  </action>
+  <action name="action49x49">
+   <property name="text">
+    <string>49x49</string>
+   </property>
+  </action>
+  <action name="action64x64">
+   <property name="text">
+    <string>64x64</string>
    </property>
   </action>
  </widget>

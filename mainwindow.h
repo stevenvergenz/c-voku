@@ -5,6 +5,7 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QTime>
+#include <QSignalMapper>
 
 #include "logger.h"
 #include "grid.h"
@@ -24,6 +25,7 @@ public:
 	~MainWindow();
 
 public slots:
+	void newGrid(int size);
 	void openFile();
 	void printLog(QString msg);
 	
@@ -31,6 +33,7 @@ private:
 	Ui::MainWindow *ui;
 	Grid* grid;
 	GridModel* model;
+	QSignalMapper newGridMapper;
 };
 
 #endif // MAINWINDOW_H
