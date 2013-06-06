@@ -124,6 +124,21 @@ bool GridModel::setData(const QModelIndex& index, const QVariant& value, int rol
 			cellsChanged(_grid.unwindHistorySince().toList());
 			return true;
 		}
+		else if( val == Cell::UNKNOWN && subject->value() != Cell::UNKNOWN && !subject->isGiven() )
+		{
+			auto affectedCells = _grid.unwindHistorySince(subject);
+			int response = QMessageBox::question( (QWidget*)QObject::parent(), "Confirm multiple clear",
+				"You cannot clear this cell without invalidating everything done since. "
+				"Is this alright?"
+			);
+			if( response == QMessageBox::Yes ){
+				HistoryFrame* frame = _grid.undo(subject);
+				delete frame;
+				cellsChanged(affectedCells.toList());
+				return true;
+			}
+			else return false;
+		}
 		else return false;
 	}
 	else return false;

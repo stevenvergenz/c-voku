@@ -379,4 +379,5 @@ QSet<Cell*> Grid::unwindHistorySince(Cell *cell)
 			return unwindHistorySince(frame);
 		}
 	}
+	return QSet<Cell*>();
 }

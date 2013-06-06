@@ -5,6 +5,7 @@
 #include <QDebug>
 #include <QFont>
 #include <QColor>
+#include <QMessageBox>
 
 #include "grid.h"
 #include "historyframe.h"
